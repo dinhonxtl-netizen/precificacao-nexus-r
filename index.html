@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS-R | Gerador de Proposta</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --bg: #080a0f;
+  --card: #10131a;
+  --card2: #161b26;
+  --gold: #C9A84C;
+  --gold2: #e8c96a;
+  --white: #f0f0f0;
+  --muted: #7a8090;
+  --border: #222840;
+  --green: #27ae60;
+  --red: #e74c3c;
+  --blue: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
+
+/* HEADER */
+.app-header { background: linear-gradient(135deg, #0a0d14, #131826); border-bottom: 2px solid var(--gold); padding: 16px 24px; display: flex; align-items: center; gap: 14px; }
+.logo-badge { background: var(--gold); color: #000; font-weight: 900; font-size: 12px; padding: 5px 10px; border-radius: 4px; letter-spacing: 2px; }
+.app-header h1 { font-size: 16px; font-weight: 700; }
+.app-header p { font-size: 11px; color: var(--muted); }
+
+/* PROGRESS */
+.progress-wrap { background: var(--card); padding: 16px 24px; border-bottom: 1px solid var(--border); }
+.progress-steps { display: flex; align-items: center; gap: 0; max-width: 600px; margin: 0 auto; }
+.step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; transition: all .3s; border: 2px solid var(--border); background: var(--card2); color: var(--muted); }
+.step-dot.active { border-color: var(--gold); background: var(--gold); color: #000; }
+.step-dot.done { border-color: var(--green); background: var(--green); color: #fff; }
+.step-line { flex: 1; height: 2px; background: var(--border); transition: all .3s; }
+.step-line.done { background: var(--green); }
+.progress-label { text-align: center; font-size: 12px; color: var(--gold); font-weight: 600; margin-top: 8px; }
+
+/* CONTAINER */
+.container { max-width: 680px; margin: 0 auto; padding: 28px 20px; }
+
+/* STEPS */
+.step { display: none; animation: fadeIn .3s ease; }
+.step.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* STEP HEADER */
+.step-title { font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+.step-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+/* FORM ELEMENTS */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.form-group input, .form-group select { width: 100%; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; color: var(--white); font-size: 13px; outline: none; transition: border .2s; }
+.form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+.form-group input::placeholder { color: var(--muted); }
+.form-group select option { background: var(--card2); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* RADIO & CHECKBOX CARDS */
+.option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.option-grid.single-col { grid-template-columns: 1fr; }
+.option-card { background: var(--card2); border: 2px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: all .2s; display: flex; align-items: flex-start; gap: 10px; }
+.option-card:hover { border-color: rgba(201,168,76,0.4); }
+.option-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+.option-card input[type="radio"], .option-card input[type="checkbox"] { display: none; }
+.option-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.option-text { flex: 1; }
+.option-text strong { font-size: 13px; color: var(--white); display: block; margin-bottom: 2px; }
+.option-text span { font-size: 11px; color: var(--muted); }
+.check-mark { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; margin-top: 2px; transition: all .2s; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.option-card.selected .check-mark { background: var(--gold); border-color: var(--gold); color: #000; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; text-decoration: none; }
+.btn-gold { background: var(--gold); color: #000; }
+.btn-gold:hover { background: var(--gold2); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--gold); border: 2px solid var(--gold); }
+.btn-outline:hover { background: rgba(201,168,76,0.1); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-green:hover { background: #2ecc71; }
+.btn-blue { background: var(--blue); color: #fff; }
+.btn-blue:hover { background: #60a5fa; }
+.btn-red { background: #c0392b; color: #fff; }
+.btn-lg { padding: 14px 28px; font-size: 15px; }
+.btn-full { width: 100%; justify-content: center; margin-bottom: 10px; }
+.btn-group { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+
+/* SECTION LABEL */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 12px; margin-top: 20px; display: flex; align-items: center; gap: 8px; }
+.section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* PROPOSTA */
+.proposal-header { background: linear-gradient(135deg, #0d1018, #1a1e2c); border: 2px solid var(--gold); border-radius: 14px; padding: 24px; margin-bottom: 20px; text-align: center; }
+.proposal-header .nexus-logo { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: var(--gold); border: 1px solid var(--gold); display: inline-block; padding: 4px 12px; border-radius: 4px; margin-bottom: 12px; }
+.proposal-header h2 { font-size: 22px; font-weight: 800; color: var(--white); margin-bottom: 6px; }
+.proposal-header p { font-size: 13px; color: var(--muted); }
+
+.client-info { background: var(--card2); border-radius: 10px; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.client-info .info-item { font-size: 12px; }
+.client-info .info-item label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 2px; }
+.client-info .info-item span { color: var(--white); font-weight: 600; }
+
+.service-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.service-table th { background: var(--card2); color: var(--gold); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 10px 14px; text-align: left; }
+.service-table td { padding: 12px 14px; font-size: 12px; border-bottom: 1px solid var(--border); vertical-align: top; color: #c8ccd8; }
+.service-table tr:last-child td { border-bottom: none; }
+.service-table .name { color: var(--white); font-weight: 700; font-size: 13px; }
+.service-table .price-range { color: var(--gold); font-weight: 700; font-size: 13px; white-space: nowrap; }
+
+.total-box { background: linear-gradient(135deg, #1a1400, #0d1018); border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px; }
+.total-box .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.total-box .min { font-size: 28px; font-weight: 900; color: var(--gold); }
+.total-box .max { font-size: 15px; color: var(--white); margin-top: 4px; }
+.total-box .note { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+.differentials { background: var(--card2); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+.differentials h4 { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+.diff-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 12px; color: #b8bcc8; line-height: 1.5; }
+.diff-item::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+.next-steps { background: var(--card2); border-radius: 10px; padding: 16px; margin-bottom: 20px; border-left: 4px solid var(--gold); }
+.next-steps h4 { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+.next-step-item { display: flex; gap: 10px; margin-bottom: 8px; font-size: 12px; color: #b8bcc8; }
+.step-num { background: var(--gold); color: #000; font-weight: 900; font-size: 10px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.cta-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.cta-whatsapp { background: #25D366; color: #fff; border: none; border-radius: 10px; padding: 16px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+.cta-whatsapp:hover { background: #1db954; }
+.cta-pdf { background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 16px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; }
+.cta-pdf:hover { background: var(--gold2); }
+.cta-vcard { background: var(--card2); color: var(--white); border: 2px solid var(--border); border-radius: 10px; padding: 14px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; text-decoration: none; }
+.cta-vcard:hover { border-color: var(--gold); }
+.cta-new { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 8px; }
+.cta-new:hover { color: var(--white); border-color: var(--muted); }
+
+/* VALIDITY TAG */
+.validity { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .option-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .client-info { grid-template-columns: 1fr; }
+  .cta-buttons { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo-badge">NEXUS-R</div>
+  <div>
+    <h1>Gerador de Proposta</h1>
+    <p>Inteligência em Risco e Performance Organizacional</p>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps">
+    <div class="step-dot active" id="dot1">1</div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-dot" id="dot2">2</div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-dot" id="dot3">3</div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-dot" id="dot4">4</div>
+    <div class="step-line" id="line4"></div>
+    <div class="step-dot" id="dot5">5</div>
+  </div>
+  <div class="progress-label" id="progressLabel">Etapa 1 de 5 — Identificação</div>
+</div>
+
+<div class="container">
+
+  <!-- ETAPA 1: IDENTIFICAÇÃO -->
+  <div class="step active" id="step1">
+    <div class="step-title">👋 Vamos conhecer você</div>
+    <div class="step-sub">Preencha os dados para personalizar a proposta.</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome do Responsável *</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva">
+      </div>
+      <div class="form-group">
+        <label>Cargo</label>
+        <input type="text" id="cargo" placeholder="Ex: Gerente de Segurança">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Nome da Empresa *</label>
+      <input type="text" id="empresa" placeholder="Ex: Empresa Exemplo Ltda">
+    </div>
+
+    <div class="form-group">
+      <label>Segmento</label>
+      <select id="segmento">
+        <option value="">Selecione o segmento</option>
+        <option value="Segurança Privada">Segurança Privada</option>
+        <option value="Condomínio">Condomínio / Administradora</option>
+        <option value="Varejo">Varejo / Comércio</option>
+        <option value="Saúde">Saúde / Clínica / Hospital</option>
+        <option value="Indústria">Indústria / Logística</option>
+        <option value="Tecnologia">Tecnologia</option>
+        <option value="Educação">Educação</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="email@empresa.com">
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="telefone" placeholder="(11) 9xxxx-xxxx">
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-gold btn-lg" onclick="goStep(2)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 2: PORTE -->
+  <div class="step" id="step2">
+    <div class="step-title">🏢 Sobre a empresa</div>
+    <div class="step-sub">Essas informações definem a faixa de investimento adequada.</div>
+
+    <div class="section-label">Quantos colaboradores a empresa tem?</div>
+    <div class="option-grid single-col" id="porteGrid">
+      <label class="option-card" onclick="selectSingle(this,'porte','micro')">
+        <input type="radio" name="porte" value="micro">
+        <div class="option-icon">🏪</div>
+        <div class="option-text"><strong>Até 9 colaboradores</strong><span>Microempresa — faturamento até R$360k/ano</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'porte','pequena')">
+        <input type="radio" name="porte" value="pequena">
+        <div class="option-icon">🏢</div>
+        <div class="option-text"><strong>10 a 49 colaboradores</strong><span>Pequena empresa — faturamento até R$4,8M/ano</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'porte','media')">
+        <input type="radio" name="porte" value="media">
+        <div class="option-icon">🏬</div>
+        <div class="option-text"><strong>50 a 99 colaboradores</strong><span>Média empresa — faturamento até R$300M/ano</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'porte','grande')">
+        <input type="radio" name="porte" value="grande">
+        <div class="option-icon">🏛️</div>
+        <div class="option-text"><strong>100 ou mais colaboradores</strong><span>Grande empresa — alto volume e complexidade</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <div class="section-label">Já tiveram consultoria ou serviço similar antes?</div>
+    <div class="option-grid single-col" id="historicGrid">
+      <label class="option-card" onclick="selectSingle(this,'historico','nunca')">
+        <input type="radio" name="historico" value="nunca">
+        <div class="option-icon">🆕</div>
+        <div class="option-text"><strong>Nunca contratamos</strong><span>É a primeira vez que buscamos esse tipo de serviço</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'historico','insatisfeito')">
+        <input type="radio" name="historico" value="insatisfeito">
+        <div class="option-icon">😕</div>
+        <div class="option-text"><strong>Sim, mas sem resultado esperado</strong><span>Buscamos uma abordagem mais efetiva</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'historico','evoluir')">
+        <input type="radio" name="historico" value="evoluir">
+        <div class="option-icon">📈</div>
+        <div class="option-text"><strong>Sim, e queremos evoluir</strong><span>Já temos base, queremos dar o próximo passo</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(1)">← Voltar</button>
+      <button class="btn btn-gold btn-lg" onclick="goStep(3)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 3: DESAFIOS -->
+  <div class="step" id="step3">
+    <div class="step-title">🎯 Quais são os principais desafios?</div>
+    <div class="step-sub">Marque todos que se aplicam. Isso define os serviços recomendados.</div>
+
+    <div class="option-grid" id="desafiosGrid">
+      <label class="option-card" onclick="toggleCheck(this,'desafio_risco')">
+        <input type="checkbox" name="desafios" value="desafio_risco">
+        <div class="option-icon">🛡️</div>
+        <div class="option-text"><strong>Riscos não mapeados</strong><span>Não sei se a operação está segura</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_nr01')">
+        <input type="checkbox" name="desafios" value="desafio_nr01">
+        <div class="option-icon">📋</div>
+        <div class="option-text"><strong>Adequação NR-01</strong><span>Precisamos regularizar riscos psicossociais</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_equipe')">
+        <input type="checkbox" name="desafios" value="desafio_equipe">
+        <div class="option-icon">👥</div>
+        <div class="option-text"><strong>Equipe sem treinamento</strong><span>Nossa equipe precisa de capacitação</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_processos')">
+        <input type="checkbox" name="desafios" value="desafio_processos">
+        <div class="option-icon">⚙️</div>
+        <div class="option-text"><strong>Sem processos definidos</strong><span>Cada um faz de um jeito diferente</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_lideres')">
+        <input type="checkbox" name="desafios" value="desafio_lideres">
+        <div class="option-icon">👔</div>
+        <div class="option-text"><strong>Líderes sem preparo</strong><span>Gestores precisam de desenvolvimento</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_saude')">
+        <input type="checkbox" name="desafios" value="desafio_saude">
+        <div class="option-icon">🧠</div>
+        <div class="option-text"><strong>Saúde organizacional</strong><span>Clima, bem-estar e performance da equipe</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_digital')">
+        <input type="checkbox" name="desafios" value="desafio_digital">
+        <div class="option-icon">🌐</div>
+        <div class="option-text"><strong>Sem presença digital</strong><span>Não temos site ou material profissional</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_app')">
+        <input type="checkbox" name="desafios" value="desafio_app">
+        <div class="option-icon">📱</div>
+        <div class="option-text"><strong>Preciso de um app/sistema</strong><span>Quero uma plataforma própria</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_conteudo')">
+        <input type="checkbox" name="desafios" value="desafio_conteudo">
+        <div class="option-icon">🎬</div>
+        <div class="option-text"><strong>Conteúdo em vídeo/animação</strong><span>Precisamos de marketing em movimento</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="toggleCheck(this,'desafio_ia')">
+        <input type="checkbox" name="desafios" value="desafio_ia">
+        <div class="option-icon">🤖</div>
+        <div class="option-text"><strong>Automação com IA</strong><span>Quero automatizar processos com inteligência artificial</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(2)">← Voltar</button>
+      <button class="btn btn-gold btn-lg" onclick="goStep(4)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 4: URGÊNCIA E BUDGET -->
+  <div class="step" id="step4">
+    <div class="step-title">⏱️ Prazo e investimento</div>
+    <div class="step-sub">Essas informações ajudam a montar a proposta mais adequada.</div>
+
+    <div class="section-label">Quando precisa começar?</div>
+    <div class="option-grid single-col" id="urgenciaGrid">
+      <label class="option-card" onclick="selectSingle(this,'urgencia','imediato')">
+        <input type="radio" name="urgencia" value="imediato">
+        <div class="option-icon">🔴</div>
+        <div class="option-text"><strong>Imediatamente</strong><span>Precisamos iniciar o quanto antes</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'urgencia','30dias')">
+        <input type="radio" name="urgencia" value="30dias">
+        <div class="option-icon">🟡</div>
+        <div class="option-text"><strong>Em até 30 dias</strong><span>Temos um prazo razoável para planejar</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'urgencia','60dias')">
+        <input type="radio" name="urgencia" value="60dias">
+        <div class="option-icon">🟢</div>
+        <div class="option-text"><strong>Em até 60 dias</strong><span>Ainda estamos em fase de avaliação</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'urgencia','pesquisando')">
+        <input type="radio" name="urgencia" value="pesquisando">
+        <div class="option-icon">🔍</div>
+        <div class="option-text"><strong>Estou pesquisando</strong><span>Sem data definida, comparando opções</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <div class="section-label">Qual o investimento disponível aproximado?</div>
+    <div class="option-grid single-col" id="budgetGrid">
+      <label class="option-card" onclick="selectSingle(this,'budget','ate5k')">
+        <input type="radio" name="budget" value="ate5k">
+        <div class="option-icon">💰</div>
+        <div class="option-text"><strong>Até R$5.000</strong><span>Investimento inicial para começar</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'budget','5k15k')">
+        <input type="radio" name="budget" value="5k15k">
+        <div class="option-icon">💰💰</div>
+        <div class="option-text"><strong>R$5.000 a R$15.000</strong><span>Margem para projeto estruturado</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'budget','15k40k')">
+        <input type="radio" name="budget" value="15k40k">
+        <div class="option-icon">💰💰💰</div>
+        <div class="option-text"><strong>R$15.000 a R$40.000</strong><span>Projeto completo de transformação</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'budget','acima40k')">
+        <input type="radio" name="budget" value="acima40k">
+        <div class="option-icon">🏆</div>
+        <div class="option-text"><strong>Acima de R$40.000</strong><span>Pacote completo e contínuo</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectSingle(this,'budget','avaliar')">
+        <input type="radio" name="budget" value="avaliar">
+        <div class="option-icon">📊</div>
+        <div class="option-text"><strong>Prefiro avaliar após receber a proposta</strong><span>Quero ver o que faz sentido para minha realidade</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
+      <button class="btn btn-gold btn-lg" onclick="generateProposal()">🚀 Gerar Proposta Completa</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 5: PROPOSTA -->
+  <div class="step" id="step5">
+    <div class="proposal-header">
+      <div class="nexus-logo">NEXUS-R</div>
+      <h2>Proposta Comercial</h2>
+      <p id="propDataEmissao"></p>
+    </div>
+
+    <div class="client-info" id="clientInfo"></div>
+
+    <div class="section-label">Serviços Recomendados</div>
+    <table class="service-table" id="serviceTable">
+      <thead><tr><th>Serviço</th><th>Pilar</th><th style="text-align:right">Investimento</th></tr></thead>
+      <tbody id="serviceRows"></tbody>
+    </table>
+
+    <div class="total-box" id="totalBox"></div>
+
+    <div class="differentials" id="differentialsBox">
+      <h4>⭐ Por que a NEXUS-R?</h4>
+      <div class="diff-item">Única consultoria em SP que une risco patrimonial, capacitação, processos e tecnologia própria</div>
+      <div class="diff-item">Plataforma de diagnóstico própria baseada em OMS, Gallup Q12 e Maslach (sem custo adicional)</div>
+      <div class="diff-item">Anderson Silva: Analista de Risco Patrimonial e T.I. — expertise que nenhum concorrente tem</div>
+      <div class="diff-item">Entregas documentadas, auditáveis e em conformidade com NRs, ISO, PCI e LGPD</div>
+      <div class="diff-item" id="diffSeguranca" style="display:none">Case real: Assaí Atacadista — projetos de segurança para grandes operações</div>
+      <div class="diff-item" id="diffTech" style="display:none">Apps e agentes de IA desenvolvidos com IA, entregues em fração do tempo e custo do mercado</div>
+    </div>
+
+    <div class="next-steps">
+      <h4>📌 Próximos passos</h4>
+      <div class="next-step-item"><span class="step-num">1</span><span>Entre em contato via WhatsApp para agendar uma reunião de alinhamento (sem custo)</span></div>
+      <div class="next-step-item"><span class="step-num">2</span><span>Apresentamos a proposta detalhada com escopo, cronograma e forma de pagamento</span></div>
+      <div class="next-step-item"><span class="step-num">3</span><span>Assinatura de contrato com 50% de entrada e início imediato</span></div>
+    </div>
+
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;">📌 Esta proposta tem validade de <strong style="color:var(--white)">15 dias</strong> a partir da data de emissão.</p>
+
+    <div class="cta-buttons">
+      <button class="cta-pdf" onclick="generatePDF()">📄 Baixar Proposta em PDF</button>
+      <a class="cta-whatsapp" href="https://wa.me/5511947718044?text=Olá%20Anderson!%20Acabei%20de%20gerar%20uma%20proposta%20pelo%20app%20da%20Nexus-R%20e%20gostaria%20de%20conversar." target="_blank">💬 Falar no WhatsApp</a>
+    </div>
+    <a class="cta-vcard" onclick="downloadVCard()">📱 Salvar Contato da Nexus-R no Celular</a>
+    <button class="cta-new" onclick="resetApp()">↩ Gerar nova proposta</button>
+
+    <div class="validity">NEXUS-R Inteligência em Risco e Performance Organizacional · @nexus_risk · 11 94771-8044</div>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// DADOS DE PRECIFICAÇÃO
+// =============================================
+const PRICING = {
+  analise_risco:      { nome: 'Análise de Risco Patrimonial', pilar: '🛡️ Segurança & Risco', micro: [2500,5000], pequena: [2500,5000], media: [5000,12000], grande: [12000,30000], desc: 'Diagnóstico in loco, mapeamento de vulnerabilidades, relatório técnico com POPs e plano de ação' },
+  nr01_pgr:           { nome: 'NR-01 / PGR — Adequação e Implementação', pilar: '🛡️ Segurança & Risco', micro: [3000,6000], pequena: [3000,6000], media: [6000,15000], grande: [15000,40000], desc: 'Avaliação de riscos ocupacionais e psicossociais, elaboração do PGR, diagnóstico com plataforma Axis' },
+  saude_org:          { nome: 'Saúde Organizacional (Plataforma Axis)', pilar: '🛡️ Segurança & Risco', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Diagnóstico OMS + Gallup Q12 + Maslach, relatório executivo e plano de ação via plataforma própria' },
+  curso_portaria:     { nome: 'Formação Profissional em Portaria (Turma)', pilar: '📚 Capacitação & Processos', micro: [2500,5000], pequena: [2500,5000], media: [5000,10000], grande: [10000,20000], desc: 'Formação CBO 5174, gestão emocional c/ psicóloga, avaliação de perfil IA, certificado digital, Guia de Empregabilidade SP' },
+  trein_lideres:      { nome: 'Treinamento de Líderes e Gestores', pilar: '📚 Capacitação & Processos', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Programa de liderança sob pressão, comunicação, gestão de conflitos e alinhamento com processos' },
+  mapeamento:         { nome: 'Mapeamento e Gestão de Processos', pilar: '📚 Capacitação & Processos', micro: [2000,4500], pequena: [2000,4500], media: [4500,10000], grande: [10000,25000], desc: 'Diagnóstico, fluxogramas, POPs, checklists, implantação e capacitação da equipe nos novos processos' },
+  animacao:           { nome: 'Animação com IA (por vídeo)', pilar: '💻 Tecnologia & Digital', micro: [500,1500], pequena: [500,1500], media: [1000,2500], grande: [2500,5000], desc: 'Animação profissional com identidade visual da empresa, trilha, legenda, formato para Instagram/YouTube' },
+  pacote_animacoes:   { nome: 'Pacote Mensal de Animações (3–5 vídeos)', pilar: '💻 Tecnologia & Digital', micro: [1200,2500], pequena: [1200,2500], media: [2500,5000], grande: [5000,10000], desc: 'Entregas semanais com identidade visual padronizada, revisões incluídas — recorrente mensal' },
+  site:               { nome: 'Site Institucional', pilar: '💻 Tecnologia & Digital', micro: [1500,3500], pequena: [1500,3500], media: [3500,8000], grande: [8000,20000], desc: 'Site responsivo com identidade visual, copywriting, SEO básico, domínio e hospedagem 1 ano' },
+  app_mvp:            { nome: 'App Web / Sistema (MVP)', pilar: '💻 Tecnologia & Digital', micro: [5000,12000], pequena: [5000,12000], media: [12000,30000], grande: [30000,80000], desc: 'App funcional com autenticação, banco de dados, painel admin, LGPD compliant — entrega em 4–8 semanas' },
+  agente_ia_basico:   { nome: 'Agente de IA — Básico (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', micro: [2500,4000], pequena: [2500,4000], media: [4000,6000], grande: [6000,10000], desc: 'Setup + 3 meses de manutenção incluída. Chatbot, FAQ inteligente, automação de atendimento via WhatsApp' },
+  agente_ia_avancado: { nome: 'Agente de IA — Avançado (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', micro: null, pequena: null, media: [8000,15000], grande: [15000,30000], desc: 'Agente operacional com acesso a dados da empresa, relatórios automáticos, análise de risco por IA' },
+};
+
+// MAPEAMENTO: desafio → serviços recomendados
+const CHALLENGE_MAP = {
+  desafio_risco:     ['analise_risco'],
+  desafio_nr01:      ['nr01_pgr', 'saude_org'],
+  desafio_equipe:    ['curso_portaria'],
+  desafio_processos: ['mapeamento'],
+  desafio_lideres:   ['trein_lideres'],
+  desafio_saude:     ['saude_org', 'nr01_pgr'],
+  desafio_digital:   ['site', 'animacao'],
+  desafio_app:       ['app_mvp'],
+  desafio_conteudo:  ['animacao', 'pacote_animacoes'],
+  desafio_ia:        ['agente_ia_basico'],
+};
+
+// =============================================
+// ESTADO DO APP
+// =============================================
+let state = {
+  step: 1,
+  nome: '', cargo: '', empresa: '', segmento: '', email: '', telefone: '',
+  porte: '', historico: '', desafios: [], urgencia: '', budget: '',
+  servicos: [], totalMin: 0, totalMax: 0
+};
+
+// =============================================
+// NAVEGAÇÃO
+// =============================================
+function goStep(n) {
+  if (n === 2 && !validate1()) return;
+  if (n === 3 && !validate2()) return;
+  if (n === 4 && !validate3()) return;
+
+  document.getElementById('step' + state.step).classList.remove('active');
+  state.step = n;
+  document.getElementById('step' + n).classList.add('active');
+  updateProgress(n);
+  window.scrollTo(0,0);
+}
+
+function updateProgress(n) {
+  const labels = ['', 'Identificação', 'Porte da Empresa', 'Desafios', 'Prazo & Investimento', 'Proposta'];
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.classList.remove('active', 'done');
+    if (i < n) dot.classList.add('done'), dot.innerHTML = '✓';
+    else if (i === n) dot.classList.add('active'), dot.innerHTML = i;
+    else dot.innerHTML = i;
+    if (i < 5) {
+      const line = document.getElementById('line' + i);
+      line.classList.toggle('done', i < n);
+    }
+  }
+  document.getElementById('progressLabel').textContent = `Etapa ${n} de 5 — ${labels[n]}`;
+}
+
+// =============================================
+// VALIDAÇÕES
+// =============================================
+function validate1() {
+  state.nome = document.getElementById('nome').value.trim();
+  state.empresa = document.getElementById('empresa').value.trim();
+  state.cargo = document.getElementById('cargo').value.trim();
+  state.segmento = document.getElementById('segmento').value;
+  state.email = document.getElementById('email').value.trim();
+  state.telefone = document.getElementById('telefone').value.trim();
+  if (!state.nome) { alert('Por favor, informe seu nome.'); return false; }
+  if (!state.empresa) { alert('Por favor, informe o nome da empresa.'); return false; }
+  return true;
+}
+function validate2() {
+  state.porte = document.querySelector('input[name="porte"]:checked')?.value || '';
+  state.historico = document.querySelector('input[name="historico"]:checked')?.value || '';
+  if (!state.porte) { alert('Por favor, selecione o porte da empresa.'); return false; }
+  return true;
+}
+function validate3() {
+  state.desafios = Array.from(document.querySelectorAll('input[name="desafios"]:checked')).map(el => el.value);
+  if (state.desafios.length === 0) { alert('Selecione pelo menos um desafio.'); return false; }
+  return true;
+}
+
+// =============================================
+// SELEÇÃO DE OPÇÕES
+// =============================================
+function selectSingle(el, group, val) {
+  document.querySelectorAll(`#${group}Grid .option-card`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+  el.querySelector('.check-mark').innerHTML = '✓';
+}
+
+function toggleCheck(el, val) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  el.querySelector('.check-mark').innerHTML = cb.checked ? '✓' : '';
+}
+
+// =============================================
+// GERAÇÃO DA PROPOSTA
+// =============================================
+function generateProposal() {
+  state.urgencia = document.querySelector('input[name="urgencia"]:checked')?.value || 'pesquisando';
+  state.budget = document.querySelector('input[name="budget"]:checked')?.value || 'avaliar';
+  state.desafios = Array.from(document.querySelectorAll('input[name="desafios"]:checked')).map(el => el.value);
+  if (state.desafios.length === 0) { alert('Selecione pelo menos um desafio.'); return; }
+  state.porte = document.querySelector('input[name="porte"]:checked')?.value || 'pequena';
+
+  // Montar lista de serviços únicos recomendados
+  const recommended = new Set();
+  state.desafios.forEach(d => {
+    (CHALLENGE_MAP[d] || []).forEach(s => recommended.add(s));
+  });
+
+  // Filtrar por budget se disponível
+  const budgetLimits = { ate5k: 5000, '5k15k': 15000, '15k40k': 40000, acima40k: Infinity, avaliar: Infinity };
+  const budgetMax = budgetLimits[state.budget] || Infinity;
+
+  // Calcular preços
+  const tier = state.porte === 'micro' ? 'micro' : state.porte === 'pequena' ? 'pequena' : state.porte === 'media' ? 'media' : 'grande';
+  let totalMin = 0, totalMax = 0;
+  state.servicos = [];
+
+  recommended.forEach(key => {
+    const p = PRICING[key];
+    if (!p) return;
+    const range = p[tier];
+    if (!range) return;
+    totalMin += range[0];
+    totalMax += range[1];
+    state.servicos.push({ key, ...p, min: range[0], max: range[1] });
+  });
+
+  state.totalMin = totalMin;
+  state.totalMax = totalMax;
+
+  // Mostrar diferenciais específicos
+  if (state.desafios.includes('desafio_risco') || state.desafios.includes('desafio_nr01')) {
+    document.getElementById('diffSeguranca').style.display = 'flex';
+  }
+  if (state.desafios.includes('desafio_app') || state.desafios.includes('desafio_ia') || state.desafios.includes('desafio_conteudo')) {
+    document.getElementById('diffTech').style.display = 'flex';
+  }
+
+  renderProposal();
+  goStep(5);
+}
+
+function renderProposal() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  document.getElementById('propDataEmissao').textContent = `Emitida em ${dateStr}`;
+
+  // Info do cliente
+  const ci = document.getElementById('clientInfo');
+  ci.innerHTML = `
+    <div class="info-item"><label>Cliente</label><span>${state.nome}</span></div>
+    <div class="info-item"><label>Empresa</label><span>${state.empresa}</span></div>
+    ${state.cargo ? `<div class="info-item"><label>Cargo</label><span>${state.cargo}</span></div>` : ''}
+    ${state.segmento ? `<div class="info-item"><label>Segmento</label><span>${state.segmento}</span></div>` : ''}
+    ${state.email ? `<div class="info-item"><label>E-mail</label><span>${state.email}</span></div>` : ''}
+    ${state.telefone ? `<div class="info-item"><label>Telefone</label><span>${state.telefone}</span></div>` : ''}
+    <div class="info-item"><label>Porte</label><span>${capitalize(state.porte)} empresa</span></div>
+  `;
+
+  // Tabela de serviços
+  const tbody = document.getElementById('serviceRows');
+  tbody.innerHTML = '';
+  state.servicos.forEach(s => {
+    tbody.innerHTML += `
+      <tr>
+        <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
+        <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
+        <td style="text-align:right"><span class="price-range">R$${fmt(s.min)} – R$${fmt(s.max)}</span></td>
+      </tr>`;
+  });
+
+  // Total
+  const urgLabels = { imediato:'🔴 Imediato', '30dias':'🟡 Até 30 dias', '60dias':'🟢 Até 60 dias', pesquisando:'🔍 Em avaliação' };
+  document.getElementById('totalBox').innerHTML = `
+    <div class="label">Investimento Estimado Total</div>
+    <div class="min">R$${fmt(state.totalMin)}</div>
+    <div class="max">até R$${fmt(state.totalMax)}</div>
+    <div class="note">Prazo de início: ${urgLabels[state.urgencia] || '—'} · Formas de pagamento: 50% entrada + 50% entrega</div>
+  `;
+}
+
+// =============================================
+// PDF
+// =============================================
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, M = 18;
+  let y = 0;
+
+  // BG
+  doc.setFillColor(8, 10, 15);
+  doc.rect(0, 0, W, 297, 'F');
+
+  // Gold bar top
+  doc.setFillColor(201, 168, 76);
+  doc.rect(0, 0, W, 2, 'F');
+
+  // Header
+  y = 14;
+  doc.setFillColor(16, 19, 26);
+  doc.roundedRect(M, y, W - 2*M, 32, 4, 4, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7);
+  doc.setTextColor(201, 168, 76);
+  doc.text('NEXUS-R', W/2, y+8, { align:'center' });
+  doc.setFontSize(14);
+  doc.setTextColor(240, 240, 240);
+  doc.text('PROPOSTA COMERCIAL', W/2, y+17, { align:'center' });
+  doc.setFontSize(8);
+  doc.setTextColor(122, 128, 144);
+  doc.text('Inteligência em Risco e Performance Organizacional', W/2, y+24, { align:'center' });
+  const now = new Date();
+  doc.text(`Emitida em ${now.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' })} · Válida por 15 dias`, W/2, y+30, { align:'center' });
+
+  // Client info box
+  y += 40;
+  doc.setFillColor(22, 27, 38);
+  doc.roundedRect(M, y, W - 2*M, 30, 3, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(201, 168, 76);
+  doc.text('DADOS DO CLIENTE', M+6, y+8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(240,240,240);
+  doc.text(`${state.nome}${state.cargo ? ' — ' + state.cargo : ''}`, M+6, y+15);
+  doc.text(`${state.empresa}${state.segmento ? ' · ' + state.segmento : ''}`, M+6, y+21);
+  if (state.email || state.telefone) doc.text(`${state.email}${state.email && state.telefone ? ' · ' : ''}${state.telefone}`, M+6, y+27);
+
+  // Services
+  y += 38;
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
+  doc.text('SERVIÇOS RECOMENDADOS', M, y);
+  y += 6;
+
+  // Table header
+  doc.setFillColor(22, 27, 38);
+  doc.rect(M, y, W - 2*M, 7, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(201, 168, 76);
+  doc.text('SERVIÇO', M+3, y+5);
+  doc.text('INVESTIMENTO', W-M-3, y+5, { align:'right' });
+  y += 9;
+
+  state.servicos.forEach((s, i) => {
+    const h = 14;
+    if (i % 2 === 0) { doc.setFillColor(16,19,26); doc.rect(M, y-2, W-2*M, h, 'F'); }
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(240,240,240);
+    doc.text(s.nome, M+3, y+3);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(122,128,144);
+    const descLines = doc.splitTextToSize(s.desc, W-2*M-60);
+    doc.text(descLines[0], M+3, y+8);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201,168,76);
+    doc.text(`R$${fmt(s.min)} – R$${fmt(s.max)}`, W-M-3, y+5, { align:'right' });
+    y += h;
+  });
+
+  // Total box
+  y += 6;
+  doc.setFillColor(26, 20, 0);
+  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'F');
+  doc.setDrawColor(201, 168, 76); doc.setLineWidth(0.5);
+  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'S');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(122,128,144);
+  doc.text('INVESTIMENTO ESTIMADO TOTAL', W/2, y+7, { align:'center' });
+  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(201, 168, 76);
+  doc.text(`R$${fmt(state.totalMin)} – R$${fmt(state.totalMax)}`, W/2, y+16, { align:'center' });
+  y += 28;
+
+  // Why Nexus-R
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
+  doc.text('POR QUE A NEXUS-R?', M, y); y += 6;
+  const diffs = [
+    'Única consultoria em SP que une risco patrimonial, capacitação, processos e tecnologia própria',
+    'Plataforma de diagnóstico própria baseada em OMS, Gallup Q12 e Maslach',
+    'Anderson Silva: Analista de Risco Patrimonial e T.I. — expertise que nenhum concorrente tem',
+    'Entregas documentadas, auditáveis e em conformidade com NRs, ISO, PCI e LGPD'
+  ];
+  diffs.forEach(d => {
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(184, 188, 200);
+    doc.text('✓ ' + d, M+2, y); y += 6;
+  });
+
+  // Next steps
+  y += 4;
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
+  doc.text('PRÓXIMOS PASSOS', M, y); y += 6;
+  const steps = ['1. Entre em contato via WhatsApp para agendar reunião de alinhamento (sem custo)', '2. Apresentamos proposta detalhada com escopo, cronograma e forma de pagamento', '3. Assinatura de contrato com 50% de entrada e início imediato'];
+  steps.forEach(s => {
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(184, 188, 200);
+    doc.text(s, M+2, y); y += 6;
+  });
+
+  // FOOTER — contact CTA
+  y = 265;
+  doc.setFillColor(201, 168, 76);
+  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(0,0,0);
+  doc.text('📱 SALVAR CONTATO DA NEXUS-R', W/2, y+8, { align:'center' });
+  doc.setFontSize(9);
+  doc.text('Anderson Silva · WhatsApp: (11) 94771-8044 · @nexus_risk', W/2, y+14, { align:'center' });
+  doc.setLink(M, y, W-2*M, 22, { url: 'https://wa.me/5511947718044' });
+
+  // Gold bar bottom
+  doc.setFillColor(201, 168, 76);
+  doc.rect(0, 295, W, 2, 'F');
+
+  doc.save(`Proposta_NexusR_${state.empresa.replace(/\s/g,'_')}_${now.toLocaleDateString('pt-BR').replace(/\//g,'-')}.pdf`);
+}
+
+// =============================================
+// VCARD
+// =============================================
+function downloadVCard() {
+  const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:Anderson Silva - Nexus-R
+ORG:NEXUS-R Inteligência em Risco
+TEL;TYPE=CELL,PREF:+5511947718044
+EMAIL:dinhonxtl@gmail.com
+URL:https://linktr.ee/nexusrconsultoria
+NOTE:Análise de Risco Patrimonial · Capacitação · Processos · Tecnologia com IA · @nexus_risk
+END:VCARD`;
+  const blob = new Blob([vcard], { type: 'text/vcard' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Anderson_Silva_NexusR.vcf';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// =============================================
+// UTILITÁRIOS
+// =============================================
+function fmt(n) { return n.toLocaleString('pt-BR'); }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+function resetApp() {
+  state = { step:1, nome:'',cargo:'',empresa:'',segmento:'',email:'',telefone:'', porte:'',historico:'',desafios:[],urgencia:'',budget:'', servicos:[],totalMin:0,totalMax:0 };
+  document.querySelectorAll('.option-card').forEach(c => { c.classList.remove('selected'); const i = c.querySelector('input'); if(i) i.checked=false; const cm = c.querySelector('.check-mark'); if(cm) cm.innerHTML=''; });
+  document.querySelectorAll('input[type=text],input[type=email]').forEach(i => i.value='');
+  document.getElementById('segmento').value='';
+  goStep(1);
+}
+</script>
+</body>
+</html>
