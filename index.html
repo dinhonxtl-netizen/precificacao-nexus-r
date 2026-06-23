@@ -4,19 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXUS-R | Gerador de Proposta</title>
-<script>
-// Carrega jsPDF dinamicamente com fallback
-(function() {
-  var s = document.createElement('script');
-  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-  s.onerror = function() {
-    var s2 = document.createElement('script');
-    s2.src = 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js';
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s);
-})();
-</script>
 <style>
 :root {
   --bg: #080a0f;
@@ -703,156 +690,133 @@ function renderProposal() {
 }
 
 // =============================================
-// PDF
+// PDF — via impressão nativa do navegador
 // =============================================
 function generatePDF() {
-  // Verifica se jsPDF carregou
-  if (!window.jspdf && !window.jsPDF) {
-    alert('⚠️ Biblioteca de PDF ainda carregando. Verifique sua conexão com a internet e tente novamente em alguns segundos.');
-    return;
-  }
-  const jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-  if (!jsPDFLib) {
-    alert('⚠️ Não foi possível carregar o gerador de PDF. Verifique sua conexão com a internet.');
-    return;
-  }
-
-  let doc;
-  try {
-    doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  } catch(e) {
-    alert('Erro ao iniciar PDF: ' + e.message);
-    return;
-  }
-  const W = 210, M = 18;
-  let y = 0;
-
-  // BG
-  doc.setFillColor(8, 10, 15);
-  doc.rect(0, 0, W, 297, 'F');
-
-  // Gold bar top
-  doc.setFillColor(201, 168, 76);
-  doc.rect(0, 0, W, 2, 'F');
-
-  // Header
-  y = 14;
-  doc.setFillColor(16, 19, 26);
-  doc.roundedRect(M, y, W - 2*M, 32, 4, 4, 'F');
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(7);
-  doc.setTextColor(201, 168, 76);
-  doc.text('NEXUS-R', W/2, y+8, { align:'center' });
-  doc.setFontSize(14);
-  doc.setTextColor(240, 240, 240);
-  doc.text('PROPOSTA COMERCIAL', W/2, y+17, { align:'center' });
-  doc.setFontSize(8);
-  doc.setTextColor(122, 128, 144);
-  doc.text('Inteligência em Risco e Performance Organizacional', W/2, y+24, { align:'center' });
   const now = new Date();
-  doc.text(`Emitida em ${now.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' })} · Válida por 15 dias`, W/2, y+30, { align:'center' });
+  const dateStr = now.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  const urgLabels = { imediato:'Imediato', '30dias':'Até 30 dias', '60dias':'Até 60 dias', pesquisando:'Em avaliação' };
 
-  // Client info box
-  y += 40;
-  doc.setFillColor(22, 27, 38);
-  doc.roundedRect(M, y, W - 2*M, 30, 3, 3, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(201, 168, 76);
-  doc.text('DADOS DO CLIENTE', M+6, y+8);
-  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(240,240,240);
-  doc.text(`${state.nome}${state.cargo ? ' — ' + state.cargo : ''}`, M+6, y+15);
-  doc.text(`${state.empresa}${state.segmento ? ' · ' + state.segmento : ''}`, M+6, y+21);
-  if (state.email || state.telefone) doc.text(`${state.email}${state.email && state.telefone ? ' · ' : ''}${state.telefone}`, M+6, y+27);
+  const servicosHTML = state.servicos.map((s, i) => `
+    <tr style="background:${i%2===0?'#0f1219':'#13161e'}">
+      <td style="padding:10px 12px;border-bottom:1px solid #222840">
+        <strong style="color:#f0f0f0;font-size:13px">${s.nome}</strong><br>
+        <span style="color:#7a8090;font-size:11px">${s.desc}</span>
+      </td>
+      <td style="padding:10px 12px;border-bottom:1px solid #222840;text-align:right;white-space:nowrap">
+        <strong style="color:#C9A84C;font-size:13px">R$${fmt(s.min)} – R$${fmt(s.max)}</strong><br>
+        <span style="color:#7a8090;font-size:10px">${s.pilar}</span>
+      </td>
+    </tr>`).join('');
 
-  // Services
-  y += 38;
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
-  doc.text('SERVIÇOS RECOMENDADOS', M, y);
-  y += 6;
-
-  // Table header
-  doc.setFillColor(22, 27, 38);
-  doc.rect(M, y, W - 2*M, 7, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(201, 168, 76);
-  doc.text('SERVIÇO', M+3, y+5);
-  doc.text('INVESTIMENTO', W-M-3, y+5, { align:'right' });
-  y += 9;
-
-  state.servicos.forEach((s, i) => {
-    const h = 14;
-    if (i % 2 === 0) { doc.setFillColor(16,19,26); doc.rect(M, y-2, W-2*M, h, 'F'); }
-    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(240,240,240);
-    doc.text(s.nome, M+3, y+3);
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(122,128,144);
-    const descLines = doc.splitTextToSize(s.desc, W-2*M-60);
-    doc.text(descLines[0], M+3, y+8);
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201,168,76);
-    doc.text(`R$${fmt(s.min)} – R$${fmt(s.max)}`, W-M-3, y+5, { align:'right' });
-    y += h;
-  });
-
-  // Total box
-  y += 6;
-  doc.setFillColor(26, 20, 0);
-  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'F');
-  doc.setDrawColor(201, 168, 76); doc.setLineWidth(0.5);
-  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'S');
-  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(122,128,144);
-  doc.text('INVESTIMENTO ESTIMADO TOTAL', W/2, y+7, { align:'center' });
-  doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(201, 168, 76);
-  doc.text(`R$${fmt(state.totalMin)} – R$${fmt(state.totalMax)}`, W/2, y+16, { align:'center' });
-  y += 28;
-
-  // Why Nexus-R
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
-  doc.text('POR QUE A NEXUS-R?', M, y); y += 6;
-  const diffs = [
-    'Única consultoria em SP que une risco patrimonial, capacitação, processos e tecnologia própria',
-    'Plataforma de diagnóstico própria baseada em OMS, Gallup Q12 e Maslach',
-    'Anderson Silva: Analista de Risco Patrimonial e T.I. — expertise que nenhum concorrente tem',
-    'Entregas documentadas, auditáveis e em conformidade com NRs, ISO, PCI e LGPD'
-  ];
-  diffs.forEach(d => {
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(184, 188, 200);
-    doc.text('✓ ' + d, M+2, y); y += 6;
-  });
-
-  // Next steps
-  y += 4;
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(201, 168, 76);
-  doc.text('PRÓXIMOS PASSOS', M, y); y += 6;
-  const steps = ['1. Entre em contato via WhatsApp para agendar reunião de alinhamento (sem custo)', '2. Apresentamos proposta detalhada com escopo, cronograma e forma de pagamento', '3. Assinatura de contrato com 50% de entrada e início imediato'];
-  steps.forEach(s => {
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(184, 188, 200);
-    doc.text(s, M+2, y); y += 6;
-  });
-
-  // FOOTER — contact CTA
-  y = 265;
-  doc.setFillColor(201, 168, 76);
-  doc.roundedRect(M, y, W-2*M, 22, 3, 3, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(0,0,0);
-  doc.text('📱 SALVAR CONTATO DA NEXUS-R', W/2, y+8, { align:'center' });
-  doc.setFontSize(9);
-  doc.text('Anderson Silva · WhatsApp: (11) 94771-8044 · @nexus_risk', W/2, y+14, { align:'center' });
-  doc.setLink(M, y, W-2*M, 22, { url: 'https://wa.me/5511947718044' });
-
-  // Gold bar bottom
-  doc.setFillColor(201, 168, 76);
-  doc.rect(0, 295, W, 2, 'F');
-
-  try {
-    const fileName = `Proposta_NexusR_${state.empresa.replace(/[^a-zA-Z0-9]/g,'_')}_${now.toLocaleDateString('pt-BR').replace(/\//g,'-')}.pdf`;
-    doc.save(fileName);
-  } catch(e) {
-    // Fallback: abre PDF em nova aba
-    try {
-      const blob = doc.output('blob');
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    } catch(e2) {
-      alert('Erro ao salvar PDF: ' + e2.message);
-    }
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Proposta NEXUS-R — ${state.empresa}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',Arial,sans-serif; background:#080a0f; color:#f0f0f0; padding:30px 40px; max-width:800px; margin:0 auto; }
+  .gold-bar { height:4px; background:#C9A84C; border-radius:2px; margin-bottom:24px; }
+  .header { background:#10131a; border:2px solid #C9A84C; border-radius:12px; padding:24px; text-align:center; margin-bottom:20px; }
+  .logo { font-size:10px; font-weight:900; letter-spacing:3px; color:#C9A84C; border:1px solid #C9A84C; display:inline-block; padding:3px 10px; border-radius:3px; margin-bottom:10px; }
+  .header h1 { font-size:22px; font-weight:900; color:#f0f0f0; margin-bottom:4px; }
+  .header p { font-size:12px; color:#7a8090; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#C9A84C; margin:20px 0 10px; }
+  .client-box { background:#161b26; border-radius:10px; padding:16px; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .info-item label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#7a8090; display:block; margin-bottom:2px; }
+  .info-item span { font-size:13px; font-weight:600; color:#f0f0f0; }
+  table { width:100%; border-collapse:collapse; margin-bottom:20px; border-radius:10px; overflow:hidden; }
+  th { background:#161b26; color:#C9A84C; font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:10px 12px; text-align:left; }
+  .total-box { background:linear-gradient(135deg,#1a1400,#0d1018); border:2px solid #C9A84C; border-radius:12px; padding:20px; text-align:center; margin-bottom:20px; }
+  .total-box .label { font-size:11px; color:#7a8090; text-transform:uppercase; letter-spacing:1px; }
+  .total-box .value { font-size:28px; font-weight:900; color:#C9A84C; }
+  .total-box .note { font-size:11px; color:#7a8090; margin-top:6px; }
+  .diffs { background:#161b26; border-radius:10px; padding:16px; margin-bottom:20px; }
+  .diff-item { display:flex; gap:8px; margin-bottom:8px; font-size:12px; color:#b8bcc8; line-height:1.5; }
+  .diff-item::before { content:'✓'; color:#27ae60; font-weight:700; flex-shrink:0; }
+  .steps-box { background:#161b26; border-left:4px solid #C9A84C; border-radius:0 10px 10px 0; padding:16px; margin-bottom:20px; }
+  .step-row { display:flex; gap:10px; margin-bottom:8px; font-size:12px; color:#b8bcc8; }
+  .step-num { background:#C9A84C; color:#000; font-weight:900; font-size:10px; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .cta-footer { background:#C9A84C; border-radius:10px; padding:20px; text-align:center; margin-top:20px; }
+  .cta-footer h3 { color:#000; font-size:16px; font-weight:900; margin-bottom:6px; }
+  .cta-footer p { color:#333; font-size:13px; margin-bottom:12px; }
+  .cta-footer a { background:#000; color:#C9A84C; text-decoration:none; font-weight:700; font-size:13px; padding:10px 24px; border-radius:6px; display:inline-block; }
+  .validity { font-size:11px; color:#7a8090; text-align:center; margin-top:16px; }
+  @media print {
+    body { background:#080a0f !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .no-print { display:none !important; }
   }
+</style>
+</head>
+<body>
+<div class="gold-bar"></div>
+
+<div class="header">
+  <div class="logo">NEXUS-R</div>
+  <h1>Proposta Comercial</h1>
+  <p>Inteligência em Risco e Performance Organizacional · Emitida em ${dateStr} · Válida por 15 dias</p>
+</div>
+
+<div class="section-title">Dados do Cliente</div>
+<div class="client-box">
+  <div class="info-item"><label>Cliente</label><span>${state.nome}</span></div>
+  <div class="info-item"><label>Empresa</label><span>${state.empresa}</span></div>
+  ${state.cargo ? `<div class="info-item"><label>Cargo</label><span>${state.cargo}</span></div>` : ''}
+  ${state.segmento ? `<div class="info-item"><label>Segmento</label><span>${state.segmento}</span></div>` : ''}
+  ${state.email ? `<div class="info-item"><label>E-mail</label><span>${state.email}</span></div>` : ''}
+  ${state.telefone ? `<div class="info-item"><label>Telefone</label><span>${state.telefone}</span></div>` : ''}
+  <div class="info-item"><label>Porte</label><span>${capitalize(state.porte)} empresa</span></div>
+  <div class="info-item"><label>Início previsto</label><span>${urgLabels[state.urgencia] || '—'}</span></div>
+</div>
+
+<div class="section-title">Serviços Recomendados</div>
+<table>
+  <thead><tr><th>Serviço</th><th style="text-align:right">Investimento</th></tr></thead>
+  <tbody>${servicosHTML}</tbody>
+</table>
+
+<div class="total-box">
+  <div class="label">Investimento Estimado Total</div>
+  <div class="value">R$${fmt(state.totalMin)} – R$${fmt(state.totalMax)}</div>
+  <div class="note">Forma de pagamento: 50% na assinatura + 50% na entrega</div>
+</div>
+
+<div class="section-title">Por que a NEXUS-R?</div>
+<div class="diffs">
+  <div class="diff-item">Única consultoria em SP que une risco patrimonial, capacitação, processos e tecnologia própria</div>
+  <div class="diff-item">Plataforma de diagnóstico própria baseada em OMS, Gallup Q12 e Maslach (sem custo adicional)</div>
+  <div class="diff-item">Anderson Silva: Analista de Risco Patrimonial e T.I. — expertise que nenhum concorrente tem</div>
+  <div class="diff-item">Entregas documentadas, auditáveis e em conformidade com NRs, ISO, PCI e LGPD</div>
+</div>
+
+<div class="section-title">Próximos Passos</div>
+<div class="steps-box">
+  <div class="step-row"><span class="step-num">1</span><span>Entre em contato via WhatsApp para agendar reunião de alinhamento (sem custo)</span></div>
+  <div class="step-row"><span class="step-num">2</span><span>Apresentamos proposta detalhada com escopo, cronograma e forma de pagamento</span></div>
+  <div class="step-row"><span class="step-num">3</span><span>Assinatura de contrato com 50% de entrada e início imediato</span></div>
+</div>
+
+<div class="cta-footer">
+  <h3>📱 Fale com a NEXUS-R agora</h3>
+  <p>Anderson Silva · (11) 94771-8044 · @nexus_risk</p>
+  <a href="https://wa.me/5511947718044?text=Olá%20Anderson!%20Recebi%20a%20proposta%20da%20Nexus-R%20e%20gostaria%20de%20conversar.">Abrir WhatsApp</a>
+</div>
+
+<p class="validity">NEXUS-R Inteligência em Risco e Performance Organizacional · Esta proposta tem validade de 15 dias</p>
+
+<script>window.onload = function(){ window.print(); }<\/script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('⚠️ O navegador bloqueou a janela pop-up. Libere pop-ups para este site nas configurações do navegador e tente novamente.');
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
 }
 
 // =============================================
