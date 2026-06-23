@@ -4,7 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXUS-R | Gerador de Proposta</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// Carrega jsPDF dinamicamente com fallback
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  s.onerror = function() {
+    var s2 = document.createElement('script');
+    s2.src = 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js';
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s);
+})();
+</script>
 <style>
 :root {
   --bg: #080a0f;
@@ -694,8 +706,24 @@ function renderProposal() {
 // PDF
 // =============================================
 function generatePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  // Verifica se jsPDF carregou
+  if (!window.jspdf && !window.jsPDF) {
+    alert('⚠️ Biblioteca de PDF ainda carregando. Verifique sua conexão com a internet e tente novamente em alguns segundos.');
+    return;
+  }
+  const jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) {
+    alert('⚠️ Não foi possível carregar o gerador de PDF. Verifique sua conexão com a internet.');
+    return;
+  }
+
+  let doc;
+  try {
+    doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  } catch(e) {
+    alert('Erro ao iniciar PDF: ' + e.message);
+    return;
+  }
   const W = 210, M = 18;
   let y = 0;
 
@@ -812,7 +840,19 @@ function generatePDF() {
   doc.setFillColor(201, 168, 76);
   doc.rect(0, 295, W, 2, 'F');
 
-  doc.save(`Proposta_NexusR_${state.empresa.replace(/\s/g,'_')}_${now.toLocaleDateString('pt-BR').replace(/\//g,'-')}.pdf`);
+  try {
+    const fileName = `Proposta_NexusR_${state.empresa.replace(/[^a-zA-Z0-9]/g,'_')}_${now.toLocaleDateString('pt-BR').replace(/\//g,'-')}.pdf`;
+    doc.save(fileName);
+  } catch(e) {
+    // Fallback: abre PDF em nova aba
+    try {
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch(e2) {
+      alert('Erro ao salvar PDF: ' + e2.message);
+    }
+  }
 }
 
 // =============================================
