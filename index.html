@@ -260,7 +260,7 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     </div>
 
     <div class="section-label">Já tiveram consultoria ou serviço similar antes?</div>
-    <div class="option-grid single-col" id="historicGrid">
+    <div class="option-grid single-col" id="historicoGrid">
       <label class="option-card" onclick="selectSingle(this,'historico','nunca')">
         <input type="radio" name="historico" value="nunca">
         <div class="option-icon">🆕</div>
@@ -587,10 +587,21 @@ function validate3() {
 // SELEÇÃO DE OPÇÕES
 // =============================================
 function selectSingle(el, group, val) {
-  document.querySelectorAll(`#${group}Grid .option-card`).forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  el.querySelector('input').checked = true;
-  el.querySelector('.check-mark').innerHTML = '✓';
+  // Evita duplo disparo (label clica no input internamente)
+  if (window.event) window.event.preventDefault();
+  const already = el.classList.contains('selected');
+  // Limpa todas as opções do grupo
+  document.querySelectorAll('#' + group + 'Grid .option-card').forEach(c => {
+    c.classList.remove('selected');
+    c.querySelector('input').checked = false;
+    c.querySelector('.check-mark').innerHTML = '';
+  });
+  // Toggle: clicou no já selecionado → desmarca; caso contrário seleciona
+  if (!already) {
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+    el.querySelector('.check-mark').innerHTML = '✓';
+  }
 }
 
 function toggleCheck(el, val) {
