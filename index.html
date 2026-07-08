@@ -135,6 +135,34 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
 .cta-new { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 8px; }
 .cta-new:hover { color: var(--white); border-color: var(--muted); }
 
+/* PREÇO ÚNICO */
+.preco-unico-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.preco-card { border-radius: 12px; padding: 20px; text-align: center; }
+.preco-card.alvo { background: linear-gradient(135deg, #0d1018, #161b26); border: 2px solid var(--border); }
+.preco-card.negociacao { background: linear-gradient(135deg, #1a1400, #0d1018); border: 2px solid var(--gold); }
+.preco-card .pc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+.preco-card.alvo .pc-label { color: var(--muted); }
+.preco-card.negociacao .pc-label { color: var(--gold); }
+.preco-card .pc-value { font-size: 24px; font-weight: 900; }
+.preco-card.alvo .pc-value { color: var(--white); }
+.preco-card.negociacao .pc-value { color: var(--gold); }
+.preco-card .pc-note { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.negocia-tip { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 14px; margin-bottom: 20px; font-size: 12px; color: #d4b96a; line-height: 1.6; }
+.negocia-tip strong { color: var(--gold); }
+.service-picker { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+.service-pick-card { background: var(--card2); border: 2px solid var(--border); border-radius: 10px; padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all .2s; }
+.service-pick-card:hover { border-color: rgba(201,168,76,0.4); }
+.service-pick-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+.service-pick-card .sp-icon { font-size: 18px; flex-shrink: 0; }
+.service-pick-card .sp-text { flex: 1; }
+.service-pick-card .sp-text strong { font-size: 13px; color: var(--white); display: block; }
+.service-pick-card .sp-text span { font-size: 11px; color: var(--muted); }
+.service-pick-card .sp-check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all .2s; }
+.service-pick-card.selected .sp-check { background: var(--gold); border-color: var(--gold); color: #000; }
+.pilar-group-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; }
+.pilar-group-label::after { content:''; flex:1; height:1px; background: var(--border); }
+@media (max-width: 600px) { .preco-unico-grid { grid-template-columns: 1fr; } }
+
 /* VALIDITY TAG */
 .validity { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
 
@@ -168,8 +196,10 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     <div class="step-dot" id="dot4">4</div>
     <div class="step-line" id="line4"></div>
     <div class="step-dot" id="dot5">5</div>
+    <div class="step-line" id="line5"></div>
+    <div class="step-dot" id="dot6">6</div>
   </div>
-  <div class="progress-label" id="progressLabel">Etapa 1 de 5 — Identificação</div>
+  <div class="progress-label" id="progressLabel">Etapa 1 de 6 — Identificação</div>
 </div>
 
 <div class="container">
@@ -361,8 +391,40 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     </div>
   </div>
 
-  <!-- ETAPA 4: URGÊNCIA E BUDGET -->
+  <!-- ETAPA 4: TIPO DE PROPOSTA -->
   <div class="step" id="step4">
+    <div class="step-title">📦 Como deseja contratar?</div>
+    <div class="step-sub">Escolha se quer uma proposta completa ou cotar um serviço específico.</div>
+
+    <div class="option-grid single-col" id="modoGrid">
+      <label class="option-card" onclick="selectModo(this,'completo')">
+        <input type="radio" name="modo" value="completo">
+        <div class="option-icon">📋</div>
+        <div class="option-text"><strong>Proposta completa</strong><span>Todos os serviços recomendados com faixa de investimento (mínimo e máximo)</span></div>
+        <div class="check-mark"></div>
+      </label>
+      <label class="option-card" onclick="selectModo(this,'especifico')">
+        <input type="radio" name="modo" value="especifico">
+        <div class="option-icon">🎯</div>
+        <div class="option-text"><strong>Serviço específico</strong><span>Selecione apenas um serviço — o app calcula o preço exato e o valor de cotação para negociação</span></div>
+        <div class="check-mark"></div>
+      </label>
+    </div>
+
+    <!-- Lista de serviços (aparece só quando "específico" for selecionado) -->
+    <div id="servicoEspecificoSection" style="display:none">
+      <div class="section-label" style="margin-top:20px">Selecione o serviço</div>
+      <div class="service-picker" id="servicePickerGrid"></div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
+      <button class="btn btn-gold btn-lg" onclick="goStep(5)">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- ETAPA 5: URGÊNCIA E BUDGET -->
+  <div class="step" id="step5">
     <div class="step-title">⏱️ Prazo e investimento</div>
     <div class="step-sub">Essas informações ajudam a montar a proposta mais adequada.</div>
 
@@ -429,13 +491,13 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-outline" onclick="goStep(3)">← Voltar</button>
+      <button class="btn btn-outline" onclick="goStep(4)">← Voltar</button>
       <button class="btn btn-gold btn-lg" onclick="generateProposal()">🚀 Gerar Proposta Completa</button>
     </div>
   </div>
 
-  <!-- ETAPA 5: PROPOSTA -->
-  <div class="step" id="step5">
+  <!-- ETAPA 6: PROPOSTA -->
+  <div class="step" id="step6">
     <div class="proposal-header">
       <div class="nexus-logo">NEXUS-R</div>
       <h2>Proposta Comercial</h2>
@@ -522,8 +584,10 @@ const CHALLENGE_MAP = {
 let state = {
   step: 1,
   nome: '', cargo: '', empresa: '', segmento: '', email: '', telefone: '',
-  porte: '', historico: '', desafios: [], urgencia: '', budget: '',
-  servicos: [], totalMin: 0, totalMax: 0
+  porte: '', historico: '', desafios: [], modoProposta: '', servicoEspecifico: '',
+  urgencia: '', budget: '',
+  servicos: [], totalMin: 0, totalMax: 0,
+  precoAlvo: 0, precoNegociacao: 0
 };
 
 // =============================================
@@ -533,6 +597,7 @@ function goStep(n) {
   if (n === 2 && !validate1()) return;
   if (n === 3 && !validate2()) return;
   if (n === 4 && !validate3()) return;
+  if (n === 5 && !validate4()) return;
 
   document.getElementById('step' + state.step).classList.remove('active');
   state.step = n;
@@ -542,19 +607,19 @@ function goStep(n) {
 }
 
 function updateProgress(n) {
-  const labels = ['', 'Identificação', 'Porte da Empresa', 'Desafios', 'Prazo & Investimento', 'Proposta'];
-  for (let i = 1; i <= 5; i++) {
+  const labels = ['', 'Identificação', 'Porte da Empresa', 'Desafios', 'Tipo de Proposta', 'Prazo & Investimento', 'Proposta'];
+  for (let i = 1; i <= 6; i++) {
     const dot = document.getElementById('dot' + i);
     dot.classList.remove('active', 'done');
     if (i < n) dot.classList.add('done'), dot.innerHTML = '✓';
     else if (i === n) dot.classList.add('active'), dot.innerHTML = i;
     else dot.innerHTML = i;
-    if (i < 5) {
+    if (i < 6) {
       const line = document.getElementById('line' + i);
       line.classList.toggle('done', i < n);
     }
   }
-  document.getElementById('progressLabel').textContent = `Etapa ${n} de 5 — ${labels[n]}`;
+  document.getElementById('progressLabel').textContent = `Etapa ${n} de 6 — ${labels[n]}`;
 }
 
 // =============================================
@@ -580,7 +645,89 @@ function validate2() {
 function validate3() {
   state.desafios = Array.from(document.querySelectorAll('input[name="desafios"]:checked')).map(el => el.value);
   if (state.desafios.length === 0) { alert('Selecione pelo menos um desafio.'); return false; }
+  // Ao avançar para etapa 4, constrói a lista de serviços recomendados para o picker
+  buildServicePicker();
   return true;
+}
+function validate4() {
+  state.modoProposta = document.querySelector('input[name="modo"]:checked')?.value || '';
+  if (!state.modoProposta) { alert('Selecione como deseja contratar.'); return false; }
+  if (state.modoProposta === 'especifico') {
+    state.servicoEspecifico = document.querySelector('.service-pick-card.selected')?.dataset.key || '';
+    if (!state.servicoEspecifico) { alert('Selecione o serviço específico desejado.'); return false; }
+  }
+  return true;
+}
+
+// =============================================
+// MODO DE PROPOSTA
+// =============================================
+function selectModo(el, modo) {
+  if (window.event) window.event.preventDefault();
+  const already = el.classList.contains('selected');
+  document.querySelectorAll('#modoGrid .option-card').forEach(c => {
+    c.classList.remove('selected');
+    c.querySelector('input').checked = false;
+    c.querySelector('.check-mark').innerHTML = '';
+  });
+  if (!already) {
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+    el.querySelector('.check-mark').innerHTML = '✓';
+    document.getElementById('servicoEspecificoSection').style.display = modo === 'especifico' ? 'block' : 'none';
+  } else {
+    document.getElementById('servicoEspecificoSection').style.display = 'none';
+  }
+}
+
+const SERVICE_ICONS = {
+  analise_risco:'🛡️', nr01_pgr:'📋', saude_org:'🧠', curso_portaria:'🎓',
+  trein_lideres:'👔', mapeamento:'⚙️', animacao:'🎬', pacote_animacoes:'📹',
+  site:'🌐', app_mvp:'📱', agente_ia_basico:'🤖', agente_ia_avancado:'🤖'
+};
+const PILAR_ORDER = ['🛡️ Segurança & Risco','📚 Capacitação & Processos','💻 Tecnologia & Digital','🤖 Inteligência Artificial'];
+
+function buildServicePicker() {
+  const tier = state.porte === 'micro' ? 'micro' : state.porte === 'pequena' ? 'pequena' : state.porte === 'media' ? 'media' : 'grande';
+  const grid = document.getElementById('servicePickerGrid');
+  grid.innerHTML = '';
+  PILAR_ORDER.forEach(pilar => {
+    const items = Object.entries(PRICING).filter(([k,v]) => v.pilar === pilar && v[tier]);
+    if (!items.length) return;
+    const lbl = document.createElement('div');
+    lbl.className = 'pilar-group-label';
+    lbl.textContent = pilar;
+    grid.appendChild(lbl);
+    items.forEach(([key, p]) => {
+      const range = p[tier];
+      const target = calcTarget(range[0], range[1]);
+      const card = document.createElement('div');
+      card.className = 'service-pick-card';
+      card.dataset.key = key;
+      card.innerHTML = `<span class="sp-icon">${SERVICE_ICONS[key]||'📌'}</span><div class="sp-text"><strong>${p.nome}</strong><span>Preço alvo: R$${fmt(target)} · Cotação: R$${fmt(Math.round(target*1.2/50)*50)}</span></div><div class="sp-check"></div>`;
+      card.onclick = () => selectServiceCard(card, key);
+      grid.appendChild(card);
+    });
+  });
+}
+
+function selectServiceCard(el, key) {
+  const already = el.classList.contains('selected');
+  document.querySelectorAll('.service-pick-card').forEach(c => {
+    c.classList.remove('selected');
+    c.querySelector('.sp-check').innerHTML = '';
+  });
+  if (!already) {
+    el.classList.add('selected');
+    el.querySelector('.sp-check').innerHTML = '✓';
+    state.servicoEspecifico = key;
+  } else {
+    state.servicoEspecifico = '';
+  }
+}
+
+function calcTarget(min, max) {
+  return Math.round((min + (max - min) * 0.7) / 50) * 50;
 }
 
 // =============================================
@@ -617,39 +764,41 @@ function toggleCheck(el, val) {
 function generateProposal() {
   state.urgencia = document.querySelector('input[name="urgencia"]:checked')?.value || 'pesquisando';
   state.budget = document.querySelector('input[name="budget"]:checked')?.value || 'avaliar';
-  state.desafios = Array.from(document.querySelectorAll('input[name="desafios"]:checked')).map(el => el.value);
-  if (state.desafios.length === 0) { alert('Selecione pelo menos um desafio.'); return; }
-  state.porte = document.querySelector('input[name="porte"]:checked')?.value || 'pequena';
-
-  // Montar lista de serviços únicos recomendados
-  const recommended = new Set();
-  state.desafios.forEach(d => {
-    (CHALLENGE_MAP[d] || []).forEach(s => recommended.add(s));
-  });
-
-  // Filtrar por budget se disponível
-  const budgetLimits = { ate5k: 5000, '5k15k': 15000, '15k40k': 40000, acima40k: Infinity, avaliar: Infinity };
-  const budgetMax = budgetLimits[state.budget] || Infinity;
-
-  // Calcular preços
   const tier = state.porte === 'micro' ? 'micro' : state.porte === 'pequena' ? 'pequena' : state.porte === 'media' ? 'media' : 'grande';
-  let totalMin = 0, totalMax = 0;
-  state.servicos = [];
 
-  recommended.forEach(key => {
+  if (state.modoProposta === 'especifico') {
+    // MODO SERVIÇO ESPECÍFICO — preço exato + negociação
+    const key = state.servicoEspecifico;
     const p = PRICING[key];
-    if (!p) return;
     const range = p[tier];
-    if (!range) return;
-    totalMin += range[0];
-    totalMax += range[1];
-    state.servicos.push({ key, ...p, min: range[0], max: range[1] });
-  });
+    const target = calcTarget(range[0], range[1]);
+    const negociacao = Math.round(target * 1.2 / 50) * 50;
+    state.precoAlvo = target;
+    state.precoNegociacao = negociacao;
+    state.servicos = [{ key, ...p, min: range[0], max: range[1], target, negociacao }];
+    state.totalMin = target;
+    state.totalMax = negociacao;
+  } else {
+    // MODO PROPOSTA COMPLETA — faixa min/max
+    const recommended = new Set();
+    state.desafios.forEach(d => { (CHALLENGE_MAP[d] || []).forEach(s => recommended.add(s)); });
+    let totalMin = 0, totalMax = 0;
+    state.servicos = [];
+    recommended.forEach(key => {
+      const p = PRICING[key];
+      if (!p) return;
+      const range = p[tier];
+      if (!range) return;
+      totalMin += range[0]; totalMax += range[1];
+      state.servicos.push({ key, ...p, min: range[0], max: range[1] });
+    });
+    state.totalMin = totalMin;
+    state.totalMax = totalMax;
+    state.precoAlvo = 0;
+    state.precoNegociacao = 0;
+  }
 
-  state.totalMin = totalMin;
-  state.totalMax = totalMax;
-
-  // Mostrar diferenciais específicos
+  // Diferenciais específicos
   if (state.desafios.includes('desafio_risco') || state.desafios.includes('desafio_nr01')) {
     document.getElementById('diffSeguranca').style.display = 'flex';
   }
@@ -658,7 +807,7 @@ function generateProposal() {
   }
 
   renderProposal();
-  goStep(5);
+  goStep(6);
 }
 
 function renderProposal() {
@@ -681,23 +830,57 @@ function renderProposal() {
   // Tabela de serviços
   const tbody = document.getElementById('serviceRows');
   tbody.innerHTML = '';
-  state.servicos.forEach(s => {
-    tbody.innerHTML += `
-      <tr>
-        <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
-        <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
-        <td style="text-align:right"><span class="price-range">R$${fmt(s.min)} – R$${fmt(s.max)}</span></td>
-      </tr>`;
-  });
-
-  // Total
   const urgLabels = { imediato:'🔴 Imediato', '30dias':'🟡 Até 30 dias', '60dias':'🟢 Até 60 dias', pesquisando:'🔍 Em avaliação' };
-  document.getElementById('totalBox').innerHTML = `
-    <div class="label">Investimento Estimado Total</div>
-    <div class="min">R$${fmt(state.totalMin)}</div>
-    <div class="max">até R$${fmt(state.totalMax)}</div>
-    <div class="note">Prazo de início: ${urgLabels[state.urgencia] || '—'} · Formas de pagamento: 50% entrada + 50% entrega</div>
-  `;
+
+  if (state.modoProposta === 'especifico') {
+    // MODO ESPECÍFICO: coluna com preço alvo
+    document.getElementById('serviceTable').querySelector('thead tr').innerHTML = '<th>Serviço</th><th>Pilar</th><th style="text-align:right">Preço Alvo</th>';
+    state.servicos.forEach(s => {
+      tbody.innerHTML += `
+        <tr>
+          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
+          <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
+          <td style="text-align:right"><span class="price-range">R$${fmt(s.target)}</span></td>
+        </tr>`;
+    });
+
+    // Caixas de preço alvo + negociação
+    document.getElementById('totalBox').innerHTML = `
+      <div class="preco-unico-grid">
+        <div class="preco-card alvo">
+          <div class="pc-label">🎯 Seu Preço Alvo</div>
+          <div class="pc-value">R$${fmt(state.precoAlvo)}</div>
+          <div class="pc-note">O valor que você quer receber no final</div>
+        </div>
+        <div class="preco-card negociacao">
+          <div class="pc-label">💬 Cotação ao Cliente</div>
+          <div class="pc-value">R$${fmt(state.precoNegociacao)}</div>
+          <div class="pc-note">Apresente este valor. Com desconto de 20% você ainda atinge seu alvo.</div>
+        </div>
+      </div>
+      <div class="negocia-tip">
+        💡 <strong>Dica de negociação:</strong> Apresente R$${fmt(state.precoNegociacao)} ao cliente. Se ele pedir desconto, você pode ceder até <strong>R$${fmt(Math.round((state.precoNegociacao - state.precoAlvo)/50)*50)}</strong> e ainda receber exatamente o que planejou — R$${fmt(state.precoAlvo)}.
+      </div>
+    `;
+  } else {
+    // MODO COMPLETO: faixa min/max
+    document.getElementById('serviceTable').querySelector('thead tr').innerHTML = '<th>Serviço</th><th>Pilar</th><th style="text-align:right">Investimento</th>';
+    state.servicos.forEach(s => {
+      tbody.innerHTML += `
+        <tr>
+          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
+          <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
+          <td style="text-align:right"><span class="price-range">R$${fmt(s.min)} – R$${fmt(s.max)}</span></td>
+        </tr>`;
+    });
+
+    document.getElementById('totalBox').innerHTML = `
+      <div class="label">Investimento Estimado Total</div>
+      <div class="min">R$${fmt(state.totalMin)}</div>
+      <div class="max">até R$${fmt(state.totalMax)}</div>
+      <div class="note">Prazo de início: ${urgLabels[state.urgencia] || '—'} · Formas de pagamento: 50% entrada + 50% entrega</div>
+    `;
+  }
 }
 
 // =============================================
@@ -859,8 +1042,10 @@ function fmt(n) { return n.toLocaleString('pt-BR'); }
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
 
 function resetApp() {
-  state = { step:1, nome:'',cargo:'',empresa:'',segmento:'',email:'',telefone:'', porte:'',historico:'',desafios:[],urgencia:'',budget:'', servicos:[],totalMin:0,totalMax:0 };
+  state = { step:1, nome:'',cargo:'',empresa:'',segmento:'',email:'',telefone:'', porte:'',historico:'',desafios:[],modoProposta:'',servicoEspecifico:'',urgencia:'',budget:'', servicos:[],totalMin:0,totalMax:0,precoAlvo:0,precoNegociacao:0 };
   document.querySelectorAll('.option-card').forEach(c => { c.classList.remove('selected'); const i = c.querySelector('input'); if(i) i.checked=false; const cm = c.querySelector('.check-mark'); if(cm) cm.innerHTML=''; });
+  document.querySelectorAll('.service-pick-card').forEach(c => { c.classList.remove('selected'); const ch = c.querySelector('.sp-check'); if(ch) ch.innerHTML=''; });
+  document.getElementById('servicoEspecificoSection').style.display = 'none';
   document.querySelectorAll('input[type=text],input[type=email]').forEach(i => i.value='');
   document.getElementById('segmento').value='';
   goStep(1);
