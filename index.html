@@ -132,6 +132,19 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
 .cta-pdf:hover { background: var(--gold2); }
 .cta-vcard { background: var(--card2); color: var(--white); border: 2px solid var(--border); border-radius: 10px; padding: 14px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; text-decoration: none; }
 .cta-vcard:hover { border-color: var(--gold); }
+.cta-back-tipo { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px; transition: all .2s; }
+.cta-back-tipo:hover { background: rgba(201,168,76,0.12); }
+
+/* NOTA INTERNA */
+.internal-notes { background: #0d1520; border: 1.5px dashed #3a4a30; border-radius: 10px; margin-top: 20px; overflow: hidden; }
+.int-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; cursor: pointer; font-size: 12px; font-weight: 700; color: #7ab560; user-select: none; }
+.int-header:hover { background: rgba(122,181,96,0.07); }
+#internalNotesContent { padding: 0 16px 16px; }
+.int-service { border-top: 1px solid #1e2a1a; padding: 10px 0; }
+.int-service-name { font-size: 11px; font-weight: 700; color: #a0c880; margin-bottom: 4px; }
+.int-service-text { font-size: 11px; color: #8a9a80; line-height: 1.6; }
+.no-print { }
+@media print { .no-print { display: none !important; } }
 .cta-new { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 12px; cursor: pointer; width: 100%; margin-top: 8px; }
 .cta-new:hover { color: var(--white); border-color: var(--muted); }
 
@@ -515,13 +528,8 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     <div class="total-box" id="totalBox"></div>
 
     <div class="differentials" id="differentialsBox">
-      <h4>⭐ Por que a NEXUS-R?</h4>
-      <div class="diff-item">Única consultoria em SP que une risco patrimonial, capacitação, processos e tecnologia própria</div>
-      <div class="diff-item">Plataforma de diagnóstico própria baseada em OMS, Gallup Q12 e Maslach (sem custo adicional)</div>
-      <div class="diff-item">Anderson Silva: Analista de Risco Patrimonial e T.I. — expertise que nenhum concorrente tem</div>
-      <div class="diff-item">Entregas documentadas, auditáveis e em conformidade com NRs, ISO, PCI e LGPD</div>
-      <div class="diff-item" id="diffSeguranca" style="display:none">Case real: Assaí Atacadista — projetos de segurança para grandes operações</div>
-      <div class="diff-item" id="diffTech" style="display:none">Apps e agentes de IA desenvolvidos com IA, entregues em fração do tempo e custo do mercado</div>
+      <h4>💡 O que sua empresa ganha com isso</h4>
+      <div id="differentialsList"></div>
     </div>
 
     <div class="next-steps">
@@ -538,7 +546,19 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
       <a class="cta-whatsapp" href="https://wa.me/5511947718044?text=Olá%20Anderson!%20Acabei%20de%20gerar%20uma%20proposta%20pelo%20app%20da%20Nexus-R%20e%20gostaria%20de%20conversar." target="_blank">💬 Falar no WhatsApp</a>
     </div>
     <a class="cta-vcard" onclick="downloadVCard()">📱 Salvar Contato da Nexus-R no Celular</a>
+    <button class="cta-back-tipo" onclick="goStep(4)">🔄 Alterar tipo de proposta</button>
     <button class="cta-new" onclick="resetApp()">↩ Gerar nova proposta</button>
+
+    <!-- NOTA INTERNA — visível apenas para Anderson, não aparece na impressão -->
+    <div class="internal-notes no-print" id="internalNotesBox">
+      <div class="int-header" onclick="toggleInternalNotes()">
+        <span>🔒 Nota Interna — O que está incluso e o que cobrar extra</span>
+        <span id="intToggleIcon">▼</span>
+      </div>
+      <div id="internalNotesContent">
+        <div id="internalNotesList"></div>
+      </div>
+    </div>
 
     <div class="validity">NEXUS-R Inteligência em Risco e Performance Organizacional · @nexus_risk · 11 94771-8044</div>
   </div>
@@ -550,19 +570,139 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
 // DADOS DE PRECIFICAÇÃO
 // =============================================
 const PRICING = {
-  analise_risco:      { nome: 'Análise de Risco Patrimonial', pilar: '🛡️ Segurança & Risco', micro: [2500,5000], pequena: [2500,5000], media: [5000,12000], grande: [12000,30000], desc: 'Diagnóstico in loco, mapeamento de vulnerabilidades, relatório técnico com POPs e plano de ação' },
-  nr01_pgr:           { nome: 'NR-01 / PGR — Adequação e Implementação', pilar: '🛡️ Segurança & Risco', micro: [3000,6000], pequena: [3000,6000], media: [6000,15000], grande: [15000,40000], desc: 'Avaliação de riscos ocupacionais e psicossociais, elaboração do PGR, diagnóstico com plataforma Axis' },
-  saude_org:          { nome: 'Saúde Organizacional (Plataforma Axis)', pilar: '🛡️ Segurança & Risco', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Diagnóstico OMS + Gallup Q12 + Maslach, relatório executivo e plano de ação via plataforma própria' },
-  curso_portaria:     { nome: 'Formação Profissional em Portaria (Turma)', pilar: '📚 Capacitação & Processos', micro: [2500,5000], pequena: [2500,5000], media: [5000,10000], grande: [10000,20000], desc: 'Formação CBO 5174, gestão emocional c/ psicóloga, avaliação de perfil IA, certificado digital, Guia de Empregabilidade SP' },
-  trein_lideres:      { nome: 'Treinamento de Líderes e Gestores', pilar: '📚 Capacitação & Processos', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Programa de liderança sob pressão, comunicação, gestão de conflitos e alinhamento com processos' },
-  mapeamento:         { nome: 'Mapeamento e Gestão de Processos', pilar: '📚 Capacitação & Processos', micro: [2000,4500], pequena: [2000,4500], media: [4500,10000], grande: [10000,25000], desc: 'Diagnóstico, fluxogramas, POPs, checklists, implantação e capacitação da equipe nos novos processos' },
-  animacao:           { nome: 'Animação com IA (por vídeo)', pilar: '💻 Tecnologia & Digital', micro: [500,1500], pequena: [500,1500], media: [1000,2500], grande: [2500,5000], desc: 'Animação profissional com identidade visual da empresa, trilha, legenda, formato para Instagram/YouTube' },
-  pacote_animacoes:   { nome: 'Pacote Mensal de Animações (3–5 vídeos)', pilar: '💻 Tecnologia & Digital', micro: [1200,2500], pequena: [1200,2500], media: [2500,5000], grande: [5000,10000], desc: 'Entregas semanais com identidade visual padronizada, revisões incluídas — recorrente mensal' },
-  site:               { nome: 'Site Institucional', pilar: '💻 Tecnologia & Digital', micro: [1500,3500], pequena: [1500,3500], media: [3500,8000], grande: [8000,20000], desc: 'Site responsivo com identidade visual, copywriting, SEO básico, domínio e hospedagem 1 ano' },
-  app_mvp:            { nome: 'App Web / Sistema (MVP)', pilar: '💻 Tecnologia & Digital', micro: [5000,12000], pequena: [5000,12000], media: [12000,30000], grande: [30000,80000], desc: 'App funcional com autenticação, banco de dados, painel admin, LGPD compliant — entrega em 4–8 semanas' },
-  agente_ia_basico:   { nome: 'Agente de IA — Básico (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', micro: [2500,4000], pequena: [2500,4000], media: [4000,6000], grande: [6000,10000], desc: 'Setup + 3 meses de manutenção incluída. Chatbot, FAQ inteligente, automação de atendimento via WhatsApp' },
-  agente_ia_avancado: { nome: 'Agente de IA — Avançado (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', micro: null, pequena: null, media: [8000,15000], grande: [15000,30000], desc: 'Agente operacional com acesso a dados da empresa, relatórios automáticos, análise de risco por IA' },
+  analise_risco:      { nome: 'Análise de Risco Patrimonial', pilar: '🛡️ Segurança & Risco', prazo: '2–3 semanas', interno: '✅ Incluso: visita técnica, relatório + POPs. ❌ Extra: implantação de melhorias físicas (obra/equipamentos).', micro: [2500,5000], pequena: [2500,5000], media: [5000,12000], grande: [12000,30000], desc: 'Diagnóstico in loco, mapeamento de vulnerabilidades, relatório técnico com POPs e plano de ação' },
+  nr01_pgr:           { nome: 'NR-01 / PGR — Adequação e Implementação', pilar: '🛡️ Segurança & Risco', prazo: '3–5 semanas', interno: '✅ Incluso: elaboração do PGR, diagnóstico e relatório. ❌ Extra: acompanhamento de fiscalização e renovações anuais (cobrar separado).', micro: [3000,6000], pequena: [3000,6000], media: [6000,15000], grande: [15000,40000], desc: 'Avaliação de riscos ocupacionais e psicossociais, elaboração do PGR, diagnóstico com plataforma Axis' },
+  saude_org:          { nome: 'Saúde Organizacional (Plataforma Axis)', pilar: '🛡️ Segurança & Risco', prazo: '3–4 semanas', interno: '✅ Incluso: diagnóstico, relatório executivo e plano de ação. ❌ Extra: reaplicação de diagnóstico após 6 meses (cobrar 50% do valor).', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Diagnóstico OMS + Gallup Q12 + Maslach, relatório executivo e plano de ação via plataforma própria' },
+  curso_portaria:     { nome: 'Formação Profissional em Portaria (Turma)', pilar: '📚 Capacitação & Processos', prazo: '2–4 semanas', interno: '✅ Incluso: material didático, certificado digital e avaliação de perfil. ❌ Extra: turmas adicionais cobrar por aluno extra.', micro: [2500,5000], pequena: [2500,5000], media: [5000,10000], grande: [10000,20000], desc: 'Formação CBO 5174, gestão emocional c/ psicóloga, avaliação de perfil IA, certificado digital, Guia de Empregabilidade SP' },
+  trein_lideres:      { nome: 'Treinamento de Líderes e Gestores', pilar: '📚 Capacitação & Processos', prazo: '4–6 semanas', interno: '✅ Incluso: programa completo + material. ❌ Extra: sessões de acompanhamento após 60 dias (cobrar por hora ou pacote mensal).', micro: [2000,5000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Programa de liderança sob pressão, comunicação, gestão de conflitos e alinhamento com processos' },
+  mapeamento:         { nome: 'Mapeamento e Gestão de Processos', pilar: '📚 Capacitação & Processos', prazo: '3–5 semanas', interno: '✅ Incluso: diagnóstico, fluxogramas, POPs e 1 treinamento da equipe. ❌ Extra: revisões após implantação e novos processos (cobrar separado).', micro: [2000,4500], pequena: [2000,4500], media: [4500,10000], grande: [10000,25000], desc: 'Diagnóstico, fluxogramas, POPs, checklists, implantação e capacitação da equipe nos novos processos' },
+  animacao:           { nome: 'Animação com IA (por vídeo)', pilar: '💻 Tecnologia & Digital', prazo: '5–7 dias úteis', interno: '✅ Incluso: 2 rodadas de revisão por vídeo. ❌ Extra: 3ª revisão em diante cobra R$150/ajuste. Locução humana não inclusa.', micro: [500,1500], pequena: [500,1500], media: [1000,2500], grande: [2500,5000], desc: 'Animação profissional com identidade visual da empresa, trilha, legenda, formato para Instagram/YouTube' },
+  pacote_animacoes:   { nome: 'Pacote Mensal de Animações (3–5 vídeos)', pilar: '💻 Tecnologia & Digital', prazo: 'Recorrente — entrega semanal', interno: '✅ Incluso: criação + 2 revisões/mês. ❌ Extra: vídeos fora do pacote cobrar avulso. Cancelamento: avisar 15 dias antes.', micro: [1200,2500], pequena: [1200,2500], media: [2500,5000], grande: [5000,10000], desc: 'Entregas semanais com identidade visual padronizada, revisões incluídas — recorrente mensal' },
+  site:               { nome: 'Site Institucional', pilar: '💻 Tecnologia & Digital', prazo: '3–5 semanas', interno: '✅ Incluso: domínio + hospedagem Vercel por 12 meses (grátis no free tier). ❌ Extra: atualizações de conteúdo após entrega R$150–300/h. Renovação domínio ano 2+ cobrar separado (~R$60/ano). Novos textos/fotos dependem do cliente enviar material.', micro: [1500,3500], pequena: [1500,3500], media: [3500,8000], grande: [8000,20000], desc: 'Site responsivo com identidade visual, copywriting, SEO básico, domínio e hospedagem 1 ano' },
+  app_mvp:            { nome: 'App Web / Sistema sob Medida', pilar: '💻 Tecnologia & Digital', prazo: '6–10 semanas', interno: '✅ Incluso: hospedagem Vercel 12 meses (free tier), 30 dias suporte técnico pós-entrega, documentação básica. ❌ Extra: atualizações de conteúdo R$150–300/h · novas funcionalidades = novo orçamento · manutenção mensal após 30 dias: R$500–1.200/mês · mudança de logo/cores R$300–500.', micro: [5000,12000], pequena: [5000,12000], media: [12000,30000], grande: [30000,80000], desc: 'App funcional com autenticação, banco de dados, painel admin, LGPD compliant — testado e documentado' },
+  agente_ia_basico:   { nome: 'Agente de IA — Básico (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', prazo: '2–3 semanas', interno: '✅ Incluso: setup + 3 meses de manutenção. ❌ Extra: mês 4 em diante cobrar R$300–600/mês de manutenção. Integrações extras (CRM, ERP) = novo orçamento.', micro: [2500,4000], pequena: [2500,4000], media: [4000,6000], grande: [6000,10000], desc: 'Setup + 3 meses de manutenção incluída. Chatbot, FAQ inteligente, automação de atendimento via WhatsApp' },
+  agente_ia_avancado: { nome: 'Agente de IA — Avançado (Setup + Mensal)', pilar: '🤖 Inteligência Artificial', prazo: '5–8 semanas', interno: '✅ Incluso: setup + 3 meses de manutenção avançada. ❌ Extra: mês 4+ cobrar R$800–1.500/mês. Treinamento com dados do cliente pode exigir custo de API (repassar ao cliente).', micro: null, pequena: null, media: [8000,15000], grande: [15000,30000], desc: 'Agente operacional com acesso a dados da empresa, relatórios automáticos, análise de risco por IA' },
+  design_grafico:     { nome: 'Design Gráfico / Identidade Visual', pilar: '💻 Tecnologia & Digital', prazo: '2–3 semanas', interno: '✅ Incluso: logo + guia de marca + 2 rodadas de revisão. ❌ Extra: aplicações extras (cartão, uniforme, banner) cobrar por peça R$150–400. Revisão extra R$150/rodada.', micro: [800,2500], pequena: [2500,6000], media: [6000,15000], grande: [15000,30000], desc: 'Logo, paleta de cores, tipografia, elementos gráficos e guia de marca — identidade profissional completa' },
+  apresentacao_exec:  { nome: 'Apresentação Executiva / Pitch Deck', pilar: '💻 Tecnologia & Digital', prazo: '1–2 semanas', interno: '✅ Incluso: até 20 slides + 2 rodadas de revisão. ❌ Extra: slides adicionais R$80/slide. Versão animada cobrar 40% a mais. Atualização após 6 meses cobrar 30% do valor original.', micro: [800,2000], pequena: [2000,5000], media: [5000,12000], grande: [12000,25000], desc: 'Apresentação profissional com storytelling visual, dados estratégicos e design executivo — até 20 slides' },
+  post_instagram:     { nome: 'Pacote de Posts Instagram (mensal)', pilar: '💻 Tecnologia & Digital', prazo: 'Recorrente — entrega semanal', interno: '✅ Incluso: 12–16 posts/mês + legendas + planejamento editorial. ❌ Extra: stories separados cobrar R$200–400/mês a mais. Tráfego pago (impulsionamento) não incluso. Cancelamento avisar 15 dias antes.', micro: [800,2000], pequena: [1200,3000], media: [2500,6000], grande: [5000,12000], desc: 'Criação de artes + legendas para 12–16 posts mensais com identidade visual padronizada e planejamento editorial' },
+
+  // ── MANUTENÇÃO & SUPORTE (clientes que retornam) ──
+  atualizacao_conteudo: { nome: 'Atualização de Conteúdo (texto, imagem, documento)', pilar: '🔧 Manutenção & Suporte', prazo: '2–5 dias úteis', interno: '✅ Incluso: até 5 itens de alteração por sessão. ❌ Extra: acima de 5 itens cobrar nova sessão. Não inclui criação de novo design.', micro: [200,400], pequena: [300,600], media: [400,800], grande: [600,1500], desc: 'Atualização de textos, troca de imagens, inserção de documentos ou novos dados em site ou app já entregue' },
+  troca_logo:           { nome: 'Troca de Logo / Aplicação de Nova Identidade', pilar: '🔧 Manutenção & Suporte', prazo: '3–7 dias úteis', interno: '✅ Incluso: aplicação do novo logo em até 3 materiais digitais (site, app, redes). ❌ Extra: cada material adicional cobrar R$150–300. Criação do novo logo não está inclusa — orçar separado em Design Gráfico.', micro: [300,600], pequena: [500,1000], media: [800,2000], grande: [2000,5000], desc: 'Substituição do logo e identidade visual em site, app ou materiais digitais existentes da empresa' },
+  manutencao_mensal:    { nome: 'Plano de Manutenção Mensal', pilar: '🔧 Manutenção & Suporte', prazo: 'Recorrente — contrato mensal', interno: '✅ Incluso: até 3h de ajustes/mês + monitoramento de funcionamento + backup mensal. ❌ Extra: horas excedentes cobrar R$150–250/h. Novos módulos/funcionalidades = novo orçamento. Cancelamento avisar 30 dias antes.', micro: [400,800], pequena: [600,1200], media: [800,2000], grande: [1500,4000], desc: 'Suporte técnico contínuo com ajustes mensais, monitoramento, backup e manutenção preventiva do sistema' },
+  nova_funcionalidade:  { nome: 'Nova Funcionalidade / Módulo no Sistema', pilar: '🔧 Manutenção & Suporte', prazo: '3–8 semanas', interno: '✅ Incluso: levantamento de requisitos, desenvolvimento, testes e entrega documentada. ❌ Extra: integrações com APIs externas pagas (repassar custo). Manutenção da nova funcionalidade após 30 dias cobrar no plano mensal.', micro: [1500,4000], pequena: [2000,6000], media: [4000,12000], grande: [8000,25000], desc: 'Desenvolvimento de novo módulo, tela ou integração em sistema já entregue — com levantamento, testes e documentação' },
+  correcao_bugs:        { nome: 'Correção de Erros (pós-garantia)', pilar: '🔧 Manutenção & Suporte', prazo: '1–5 dias úteis', interno: '✅ Incluso: diagnóstico + correção + reteste. ❌ Cobrar apenas fora do período de garantia (30 dias pós-entrega). Dentro da garantia, correção é gratuita.', micro: [150,400], pequena: [200,600], media: [300,800], grande: [500,1500], desc: 'Identificação e correção de falhas técnicas em sistema ou site entregue, após período de garantia' },
 };
+
+// BENEFÍCIOS E ROI POR SERVIÇO (foco no cliente, não no fornecedor)
+const SERVICE_DIFFERENTIALS = {
+  analise_risco: [
+    '🔎 Vulnerabilidades identificadas antes de virarem incidentes — o custo de prevenir é até 10x menor que o de remediar',
+    '📄 Relatório técnico com plano de ação priorizado: você sabe exatamente o que corrigir e em qual ordem',
+    '⚖️ Documentação que protege a empresa em auditorias, seguros patrimoniais e processos judiciais',
+  ],
+  nr01_pgr: [
+    '💰 Conformidade com NR-01 evita multas do MTE que variam de R$5.000 a R$300.000 por autuação',
+    '🛡️ PGR documentado protege contra ações trabalhistas por saúde ocupacional — passivo jurídico zerado',
+    '📊 Diagnóstico de riscos psicossociais revela as causas raiz do absenteísmo e da rotatividade da equipe',
+  ],
+  saude_org: [
+    '📈 Equipes engajadas são até 21% mais produtivas e têm 59% menos rotatividade — dados Gallup',
+    '🎯 Diagnóstico OMS + Gallup Q12 + Maslach: você decide com dados reais, não com achismo',
+    '🧩 Relatório executivo com prioridades claras — resultado visível no clima organizacional em até 60 dias',
+  ],
+  curso_portaria: [
+    '✅ Colaborador certificado CBO 5174 reduz erros operacionais e aumenta a credibilidade do seu serviço',
+    '🧠 Avaliação comportamental com IA identifica o perfil certo para cada função — menos retrabalho na contratação',
+    '💸 Redução de custo com rotatividade: substituir um funcionário custa até 2x o salário anual',
+  ],
+  trein_lideres: [
+    '🤝 Líderes preparados reduzem conflitos internos, aumentam retenção e entregam metas com mais consistência',
+    '⚡ Gestores que tomam decisões sob pressão sem comprometer o clima — resultado imediato na operação',
+    '🔗 Treinamento conectado aos processos reais da empresa — o gestor aplica no dia seguinte, não em 6 meses',
+  ],
+  mapeamento: [
+    '⚙️ Processos documentados eliminam retrabalho e erros por falta de padrão — operação funciona mesmo com equipe nova',
+    '📋 POPs e fluxogramas que qualquer colaborador consegue seguir — você para de depender de pessoas-chave',
+    '🚀 Empresa com processos escala sem virar caos — base estruturada para crescimento sustentável',
+  ],
+  animacao: [
+    '📱 Conteúdo em vídeo gera até 3x mais engajamento que imagem estática — mais alcance, mais leads',
+    '⏱️ Animações com IA entregam em dias o que agências tradicionais levam semanas — e custam menos',
+    '🎨 Identidade visual consistente em movimento aumenta reconhecimento de marca e percepção de valor',
+  ],
+  pacote_animacoes: [
+    '📅 Presença constante nas redes com conteúdo profissional semanal — sem precisar de equipe interna de criação',
+    '📊 Consistência é o que o algoritmo premia — vídeos regulares constroem audiência e autoridade ao longo do tempo',
+    '💡 Custo mensal fixo e previsível, em vez de produção cara e pontual por demanda',
+  ],
+  site: [
+    '🌐 Site profissional funciona como vendedor 24h — captura leads enquanto você dorme',
+    '👁️ 75% dos consumidores julgam a credibilidade de uma empresa pelo site: primeira impressão define a venda',
+    '🔍 SEO básico incluído — clientes que pesquisam no Google conseguem te encontrar sem você precisar pagar por anúncio',
+  ],
+  app_mvp: [
+    '📱 App próprio elimina dependência de plataformas de terceiros e taxas sobre cada transação',
+    '🎯 Sistema sob medida para o problema real da sua operação — sem adaptações ou gambiarras',
+    '🏁 Primeira versão funcional entregue em 4–8 semanas: você já começa a usar e gerar resultado antes de qualquer concorrente',
+  ],
+  agente_ia_basico: [
+    '🤖 Agente de IA atende clientes 24h por dia, 7 dias por semana — sem custo de funcionário adicional',
+    '⚡ Tempo de resposta reduzido de horas para segundos — cliente satisfeito converte mais',
+    '📊 Cada conversa gera dados sobre dúvidas e objeções reais dos seus clientes — inteligência que você usa para vender mais',
+  ],
+  agente_ia_avancado: [
+    '📈 Relatórios automáticos que antes levavam horas são gerados em segundos — decisão mais rápida, menos erro',
+    '🔄 Processos repetitivos automatizados liberam sua equipe para atividades estratégicas e de alto valor',
+    '🧠 IA que aprende com o uso — quanto mais usa, mais precisa e eficiente fica para o seu negócio',
+  ],
+  design_grafico: [
+    '🎨 Identidade visual profissional aumenta a percepção de valor do seu serviço — cliente paga mais por quem parece sério',
+    '🔁 Uma identidade consistente em todos os canais (site, redes, materiais) constrói reconhecimento de marca ao longo do tempo',
+    '📐 Guia de marca entregue: qualquer fornecedor futuro aplica sua identidade sem depender de você para cada peça',
+  ],
+  apresentacao_exec: [
+    '📊 Apresentação profissional aumenta a taxa de conversão em reuniões — cliente que vê, acredita e fecha mais rápido',
+    '🎯 Storytelling visual com seus dados e diferenciais: você chega na reunião com argumento pronto e de alto impacto',
+    '⏱️ Economia de tempo: em vez de montar slides do zero toda vez, você adapta uma base profissional e reutiliza',
+  ],
+  post_instagram: [
+    '📅 Consistência nas redes é o que o algoritmo premia — presença semanal constrói audiência qualificada ao longo do tempo',
+    '📱 Posts profissionais com identidade visual transmitem credibilidade: cliente que vê seu perfil confia antes mesmo de falar com você',
+    '💡 Você foca no negócio enquanto o conteúdo trabalha para atrair e engajar clientes todos os dias',
+  ],
+  atualizacao_conteudo: [
+    '⚡ Seu site ou app sempre atualizado transmite que sua empresa está ativa e profissional — cliente desatualizado perde credibilidade',
+    '🎯 Informações corretas evitam ligações desnecessárias: cliente encontra o que precisa e já chega pronto para fechar',
+    '🔁 Processo rápido e sem dor de cabeça — você envia o que quer mudar, a Nexus-R aplica e entrega em dias',
+  ],
+  troca_logo: [
+    '✨ Nova identidade aplicada de forma consistente em todos os canais digitais — sem misturar logo velho com novo',
+    '🚀 Rebranding feito do jeito certo aumenta a percepção de valor e prepara a empresa para novos mercados',
+    '📐 Entrega padronizada: todos os formatos e tamanhos corretos para cada canal, sem necessidade de retrabalho futuro',
+  ],
+  manutencao_mensal: [
+    '🔒 Sistema monitorado e funcionando — você descobre problemas antes do cliente e corrige sem impacto no negócio',
+    '💡 Ajustes mensais contínuos mantêm o sistema evoluindo junto com a empresa, sem acumular dívida técnica',
+    '📞 Suporte com resposta garantida: você tem um parceiro técnico de confiança, não depende de prestador desconhecido',
+  ],
+  nova_funcionalidade: [
+    '📈 Nova funcionalidade sob medida: o sistema cresce junto com o negócio — sem migrar para outro sistema do zero',
+    '⚙️ Entregamos a funcionalidade testada e documentada — sua equipe usa desde o primeiro dia sem treinamento extenso',
+    '💰 Custo previsível e escopo fechado: você sabe exatamente o que vai receber antes de aprovar o investimento',
+  ],
+  correcao_bugs: [
+    '⚡ Correção rápida e documentada: o erro é identificado, corrigido e retestado — sem gambiarras que geram novos problemas',
+    '🛡️ Seu sistema volta ao ar com segurança — sem perda de dados e com garantia sobre o que foi corrigido',
+    '📋 Relatório de correção entregue: você sabe exatamente o que foi o problema e o que foi feito para resolver',
+  ],
+};
+
+// Diferenciais universais que aparecem em todas as propostas
+const UNIVERSAL_DIFFERENTIALS = [
+  '📦 Entrega dentro do prazo e escopo combinados — com documentação e acompanhamento pós-entrega incluídos',
+  '📏 Você sai com resultados mensuráveis, não só com relatórios — ROI identificável desde o primeiro mês',
+];
 
 // MAPEAMENTO: desafio → serviços recomendados
 const CHALLENGE_MAP = {
@@ -572,9 +712,9 @@ const CHALLENGE_MAP = {
   desafio_processos: ['mapeamento'],
   desafio_lideres:   ['trein_lideres'],
   desafio_saude:     ['saude_org', 'nr01_pgr'],
-  desafio_digital:   ['site', 'animacao'],
+  desafio_digital:   ['site', 'animacao', 'design_grafico'],
   desafio_app:       ['app_mvp'],
-  desafio_conteudo:  ['animacao', 'pacote_animacoes'],
+  desafio_conteudo:  ['animacao', 'pacote_animacoes', 'post_instagram'],
   desafio_ia:        ['agente_ia_basico'],
 };
 
@@ -683,9 +823,12 @@ function selectModo(el, modo) {
 const SERVICE_ICONS = {
   analise_risco:'🛡️', nr01_pgr:'📋', saude_org:'🧠', curso_portaria:'🎓',
   trein_lideres:'👔', mapeamento:'⚙️', animacao:'🎬', pacote_animacoes:'📹',
-  site:'🌐', app_mvp:'📱', agente_ia_basico:'🤖', agente_ia_avancado:'🤖'
+  site:'🌐', app_mvp:'📱', agente_ia_basico:'🤖', agente_ia_avancado:'🤖',
+  design_grafico:'🎨', apresentacao_exec:'📊', post_instagram:'📸',
+  atualizacao_conteudo:'✏️', troca_logo:'🔄', manutencao_mensal:'🔧',
+  nova_funcionalidade:'⚡', correcao_bugs:'🐛'
 };
-const PILAR_ORDER = ['🛡️ Segurança & Risco','📚 Capacitação & Processos','💻 Tecnologia & Digital','🤖 Inteligência Artificial'];
+const PILAR_ORDER = ['🛡️ Segurança & Risco','📚 Capacitação & Processos','💻 Tecnologia & Digital','🤖 Inteligência Artificial','🔧 Manutenção & Suporte'];
 
 function buildServicePicker() {
   const tier = state.porte === 'micro' ? 'micro' : state.porte === 'pequena' ? 'pequena' : state.porte === 'media' ? 'media' : 'grande';
@@ -798,14 +941,6 @@ function generateProposal() {
     state.precoNegociacao = 0;
   }
 
-  // Diferenciais específicos
-  if (state.desafios.includes('desafio_risco') || state.desafios.includes('desafio_nr01')) {
-    document.getElementById('diffSeguranca').style.display = 'flex';
-  }
-  if (state.desafios.includes('desafio_app') || state.desafios.includes('desafio_ia') || state.desafios.includes('desafio_conteudo')) {
-    document.getElementById('diffTech').style.display = 'flex';
-  }
-
   renderProposal();
   goStep(6);
 }
@@ -838,7 +973,7 @@ function renderProposal() {
     state.servicos.forEach(s => {
       tbody.innerHTML += `
         <tr>
-          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
+          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span>${s.prazo ? `<br><span style="font-size:11px;color:var(--gold)">⏱ Prazo de entrega: ${s.prazo}</span>` : ''}</td>
           <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
           <td style="text-align:right"><span class="price-range">R$${fmt(s.target)}</span></td>
         </tr>`;
@@ -868,7 +1003,7 @@ function renderProposal() {
     state.servicos.forEach(s => {
       tbody.innerHTML += `
         <tr>
-          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span></td>
+          <td><span class="name">${s.nome}</span><br><span style="font-size:11px;color:var(--muted)">${s.desc}</span>${s.prazo ? `<br><span style="font-size:11px;color:var(--gold)">⏱ Prazo de entrega: ${s.prazo}</span>` : ''}</td>
           <td><span style="font-size:11px;color:var(--muted)">${s.pilar}</span></td>
           <td style="text-align:right"><span class="price-range">R$${fmt(s.min)} – R$${fmt(s.max)}</span></td>
         </tr>`;
@@ -881,6 +1016,22 @@ function renderProposal() {
       <div class="note">Prazo de início: ${urgLabels[state.urgencia] || '—'} · Formas de pagamento: 50% entrada + 50% entrega</div>
     `;
   }
+
+  // Diferenciais dinâmicos por serviço — foco em ROI do cliente
+  const seen = new Set();
+  const bullets = [];
+  state.servicos.forEach(s => {
+    (SERVICE_DIFFERENTIALS[s.key] || []).forEach(d => {
+      if (!seen.has(d)) { seen.add(d); bullets.push(d); }
+    });
+  });
+  UNIVERSAL_DIFFERENTIALS.forEach(d => {
+    if (!seen.has(d)) { seen.add(d); bullets.push(d); }
+  });
+  document.getElementById('differentialsList').innerHTML =
+    bullets.slice(0, 6).map(d => `<div class="diff-item">${d}</div>`).join('');
+
+  buildInternalNotes();
 }
 
 // =============================================
@@ -1040,6 +1191,29 @@ END:VCARD`;
 // =============================================
 function fmt(n) { return n.toLocaleString('pt-BR'); }
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+function buildInternalNotes() {
+  const list = document.getElementById('internalNotesList');
+  list.innerHTML = '';
+  state.servicos.forEach(s => {
+    if (!s.interno) return;
+    const div = document.createElement('div');
+    div.className = 'int-service';
+    div.innerHTML = `<div class="int-service-name">📦 ${s.nome}</div><div class="int-service-text">${s.interno}</div>`;
+    list.appendChild(div);
+  });
+  document.getElementById('internalNotesBox').style.display = list.children.length ? 'block' : 'none';
+  document.getElementById('internalNotesContent').style.display = 'none';
+  document.getElementById('intToggleIcon').textContent = '▶';
+}
+
+function toggleInternalNotes() {
+  const content = document.getElementById('internalNotesContent');
+  const icon = document.getElementById('intToggleIcon');
+  const open = content.style.display !== 'none';
+  content.style.display = open ? 'none' : 'block';
+  icon.textContent = open ? '▶' : '▼';
+}
 
 function resetApp() {
   state = { step:1, nome:'',cargo:'',empresa:'',segmento:'',email:'',telefone:'', porte:'',historico:'',desafios:[],modoProposta:'',servicoEspecifico:'',urgencia:'',budget:'', servicos:[],totalMin:0,totalMax:0,precoAlvo:0,precoNegociacao:0 };
