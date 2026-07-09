@@ -3,357 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passaporte de Entrega — NEXUS-R</title>
+  <title>NEXUS-R — Ferramentas</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --navy: #080a0f;
-      --card: #10131a;
-      --card2: #161b26;
-      --gold: #C9A84C;
-      --white: #f0f0f0;
-      --muted: #7a8090;
-      --border: #2a2f3e;
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', Arial, sans-serif; background: var(--navy); color: var(--white); min-height: 100vh; }
+    body { font-family: 'Inter', Arial, sans-serif; background: #080a0f; color: #f0f0f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 16px; }
 
-    /* ========================
-       TELA DE FORMULÁRIO
-    ======================== */
-    .app-wrapper { max-width: 620px; margin: 0 auto; padding: 28px 16px; }
+    .top-bar { width: 100%; max-width: 520px; height: 4px; background: linear-gradient(90deg, #a07830, #C9A84C, #e8c870, #C9A84C, #a07830); border-radius: 2px; margin-bottom: 36px; }
 
-    .app-header { text-align: center; margin-bottom: 28px; }
-    .nexus-logo { font-size: 10px; font-weight: 900; letter-spacing: 3px; color: var(--gold); border: 1.5px solid var(--gold); display: inline-block; padding: 4px 12px; border-radius: 3px; margin-bottom: 12px; }
-    .app-header h1 { font-size: 22px; font-weight: 900; color: var(--white); margin-bottom: 6px; }
-    .app-header p { font-size: 13px; color: var(--muted); }
+    .header { text-align: center; margin-bottom: 40px; }
+    .logo { font-size: 11px; font-weight: 900; letter-spacing: 4px; color: #C9A84C; border: 1.5px solid #C9A84C; display: inline-block; padding: 5px 14px; border-radius: 3px; margin-bottom: 16px; }
+    .header h1 { font-size: 26px; font-weight: 900; color: #f0f0f0; margin-bottom: 6px; }
+    .header p { font-size: 13px; color: #7a8090; }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 14px; }
-    .card h3 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 16px; }
+    .tools-grid { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 520px; }
 
-    .field { margin-bottom: 12px; }
-    .field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-    .field input, .field textarea {
-      width: 100%; background: var(--card2); border: 1.5px solid var(--border);
-      border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--white);
-      font-family: inherit; outline: none; transition: border-color .2s;
-    }
-    .field input:focus, .field textarea:focus { border-color: var(--gold); }
-    .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
-    .field textarea { resize: vertical; min-height: 64px; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool-card { background: #10131a; border: 1.5px solid #2a2f3e; border-radius: 14px; padding: 22px 24px; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 20px; transition: border-color .2s, transform .15s; cursor: pointer; }
+    .tool-card:hover { border-color: #C9A84C; transform: translateY(-2px); }
 
-    .step-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
-    .step-badge { background: var(--gold); color: #000; font-weight: 900; font-size: 11px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .step-row input { flex: 1; background: var(--card2); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--white); font-family: inherit; outline: none; transition: border-color .2s; }
-    .step-row input:focus { border-color: var(--gold); }
+    .tool-icon { font-size: 32px; flex-shrink: 0; }
+    .tool-info { flex: 1; }
+    .tool-name { font-size: 16px; font-weight: 900; color: #f0f0f0; margin-bottom: 4px; }
+    .tool-desc { font-size: 12px; color: #7a8090; line-height: 1.5; }
+    .tool-tag { display: inline-block; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); color: #C9A84C; font-size: 10px; font-weight: 700; letter-spacing: .5px; border-radius: 20px; padding: 2px 8px; margin-top: 6px; }
+    .tool-arrow { font-size: 20px; color: #C9A84C; flex-shrink: 0; opacity: 0.6; }
+    .tool-card:hover .tool-arrow { opacity: 1; }
 
-    .btn-gerar { width: 100%; background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 16px; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 6px; transition: opacity .2s; letter-spacing: .3px; }
-    .btn-gerar:hover { opacity: .88; }
-
-    /* ========================
-       TELA DE PREVIEW
-    ======================== */
-    #previewScreen { display: none; }
-    .preview-actions { max-width: 620px; margin: 0 auto; padding: 20px 16px 12px; display: flex; gap: 10px; }
-    .btn-print { flex: 1; background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 14px; font-size: 14px; font-weight: 900; cursor: pointer; }
-    .btn-back { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-    .btn-back:hover { color: var(--white); }
-
-    /* ========================
-       DOCUMENTO (PASSAPORTE)
-    ======================== */
-    .passport { max-width: 620px; margin: 0 auto 40px; background: #fff; border-radius: 14px; overflow: hidden; color: #1a1a2e; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
-    .pp-bar { height: 6px; background: linear-gradient(90deg, #a07830, #C9A84C, #e8c870, #C9A84C, #a07830); }
-
-    /* Header do documento */
-    .pp-header { background: #080a0f; padding: 20px 28px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-    .pp-header-left { display: flex; flex-direction: column; gap: 8px; }
-    .pp-logo-badge { font-size: 9px; font-weight: 900; letter-spacing: 3px; color: #C9A84C; border: 1.5px solid #C9A84C; display: inline-block; padding: 3px 10px; border-radius: 3px; align-self: flex-start; }
-    .pp-header h1 { font-size: 18px; font-weight: 900; color: #f0f0f0; }
-    .pp-header-sub { font-size: 11px; color: #7a8090; }
-    .pp-date-block { text-align: right; flex-shrink: 0; }
-    .pp-date-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7a8090; margin-bottom: 3px; }
-    .pp-date-value { font-size: 13px; font-weight: 700; color: #C9A84C; }
-
-    /* Seção cliente + QR */
-    .pp-body { padding: 22px 28px; }
-    .pp-top-section { display: flex; gap: 20px; align-items: flex-start; padding-bottom: 20px; border-bottom: 1.5px solid #e8e8f0; margin-bottom: 18px; }
-    .pp-client-block { flex: 1; }
-    .pp-section-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #C9A84C; margin-bottom: 8px; }
-    .pp-client-name { font-size: 22px; font-weight: 900; color: #080a0f; line-height: 1.1; margin-bottom: 4px; }
-    .pp-client-company { font-size: 14px; color: #555; margin-bottom: 6px; }
-    .pp-project-tag { display: inline-block; background: #fff8e6; border: 1.5px solid #C9A84C; border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 700; color: #a07830; }
-
-    .pp-qr-block { flex-shrink: 0; text-align: center; }
-    .pp-qr-wrap { border: 2.5px solid #C9A84C; border-radius: 10px; padding: 6px; background: #fff; display: inline-block; }
-    .pp-qr-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-top: 6px; }
-
-    /* Acesso */
-    .pp-access-box { background: #f6f6fa; border-left: 4px solid #C9A84C; border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 14px; }
-    .pp-url { font-size: 14px; font-weight: 700; color: #080a0f; word-break: break-all; margin-bottom: 3px; }
-    .pp-url a { color: #C9A84C; text-decoration: none; }
-    .pp-url-note { font-size: 11px; color: #999; }
-
-    /* Credenciais */
-    .pp-creds { display: flex; gap: 10px; margin-bottom: 14px; }
-    .pp-cred { flex: 1; background: #f6f6fa; border-radius: 8px; padding: 12px 14px; }
-    .pp-cred-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 4px; }
-    .pp-cred-value { font-size: 13px; font-weight: 700; color: #080a0f; font-family: 'Courier New', monospace; }
-
-    /* Primeiros passos */
-    .pp-steps { margin-bottom: 14px; }
-    .pp-step-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
-    .pp-step-num { background: #C9A84C; color: #000; font-weight: 900; font-size: 10px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .pp-step-text { font-size: 12px; color: #444; line-height: 1.5; }
-
-    /* Observações */
-    .pp-notes { background: #fffbee; border: 1px solid #f0d870; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 12px; color: #666; line-height: 1.6; }
-    .pp-notes strong { color: #a07830; }
-
-    /* Footer */
-    .pp-footer { background: #080a0f; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-    .pp-footer-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #7a8090; margin-bottom: 3px; }
-    .pp-footer-name { font-size: 13px; font-weight: 700; color: #C9A84C; }
-    .pp-footer-sub { font-size: 11px; color: #7a8090; margin-top: 2px; }
-    .pp-wa-btn { background: #25D366; color: #fff; border-radius: 8px; padding: 10px 18px; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-block; white-space: nowrap; }
-
-    /* IMPRESSÃO */
-    @media print {
-      body { background: #fff !important; }
-      #formScreen, .preview-actions { display: none !important; }
-      #previewScreen { display: block !important; }
-      .passport { max-width: 100%; border-radius: 0; margin: 0; box-shadow: none; }
-      @page { margin: 0; size: A4 portrait; }
-    }
+    .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #3a4050; }
+    .footer span { color: #C9A84C; }
   </style>
 </head>
 <body>
 
-<!-- ======================== FORMULÁRIO ======================== -->
-<div id="formScreen">
-  <div class="app-wrapper">
+  <div class="top-bar"></div>
 
-    <div class="app-header">
-      <div class="nexus-logo">NEXUS-R</div>
-      <h1>Passaporte de Entrega</h1>
-      <p>Preencha os dados do projeto e gere o documento de entrega profissional</p>
-    </div>
-
-    <div class="card">
-      <h3>👤 Dados do Cliente</h3>
-      <div class="field-row">
-        <div class="field">
-          <label>Nome do Cliente *</label>
-          <input type="text" id="clienteNome" placeholder="João Silva">
-        </div>
-        <div class="field">
-          <label>Empresa *</label>
-          <input type="text" id="clienteEmpresa" placeholder="Empresa XYZ">
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>📦 Dados do Projeto</h3>
-      <div class="field">
-        <label>Nome do Projeto *</label>
-        <input type="text" id="projetoNome" placeholder="Site Institucional / App de Agendamentos...">
-      </div>
-      <div class="field">
-        <label>URL de Acesso *</label>
-        <input type="url" id="projetoURL" placeholder="https://nomedocliente.com.br">
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Login / Usuário (opcional)</label>
-          <input type="text" id="login" placeholder="admin@email.com">
-        </div>
-        <div class="field">
-          <label>Senha de Acesso (opcional)</label>
-          <input type="text" id="senha" placeholder="Nexus@2026">
-        </div>
-      </div>
-      <div class="field">
-        <label>Observações / Validade (opcional)</label>
-        <textarea id="notas" placeholder="Ex: Hospedagem inclusa por 12 meses. Renovação em julho/2027. Suporte técnico por 30 dias incluso."></textarea>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>🚀 Primeiros Passos — Como Usar</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;">Personalize as instruções para o cliente começar agora.</p>
-      <div class="step-row">
-        <div class="step-badge">1</div>
-        <input type="text" id="passo1" placeholder="Acesse o link acima ou escaneie o QR Code" value="Acesse o link acima ou escaneie o QR Code com a câmera do celular">
-      </div>
-      <div class="step-row">
-        <div class="step-badge">2</div>
-        <input type="text" id="passo2" placeholder="Use o e-mail e senha para entrar" value="Use o e-mail e senha informados para acessar sua conta">
-      </div>
-      <div class="step-row">
-        <div class="step-badge">3</div>
-        <input type="text" id="passo3" placeholder="Dúvidas? Fale no WhatsApp da Nexus-R" value="Dúvidas? Fale com a Nexus-R no WhatsApp — respondemos em até 24h">
-      </div>
-    </div>
-
-    <button class="btn-gerar" onclick="gerarPassaporte()">📄 Gerar Passaporte de Entrega</button>
-
-  </div>
-</div>
-
-<!-- ======================== PREVIEW ======================== -->
-<div id="previewScreen">
-  <div class="preview-actions">
-    <button class="btn-back" onclick="voltar()">← Editar</button>
-    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+  <div class="header">
+    <div class="logo">NEXUS-R</div>
+    <h1>Painel de Ferramentas</h1>
+    <p>Inteligência em Risco e Performance Organizacional</p>
   </div>
 
-  <div class="passport">
-    <div class="pp-bar"></div>
+  <div class="tools-grid">
 
-    <div class="pp-header">
-      <div class="pp-header-left">
-        <div class="pp-logo-badge">NEXUS-R</div>
-        <h1>Passaporte de Entrega</h1>
-        <div class="pp-header-sub">Documento Oficial de Conclusão e Entrega de Projeto</div>
+    <a class="tool-card" href="nexus-r-precificacao-app.html">
+      <div class="tool-icon">💰</div>
+      <div class="tool-info">
+        <div class="tool-name">App de Precificação</div>
+        <div class="tool-desc">Gere propostas comerciais personalizadas com valores de mercado, prazo de entrega e diferenciais por serviço.</div>
+        <div class="tool-tag">PROPOSTA COMERCIAL</div>
       </div>
-      <div class="pp-date-block">
-        <div class="pp-date-label">Data de entrega</div>
-        <div class="pp-date-value" id="ppData"></div>
+      <div class="tool-arrow">→</div>
+    </a>
+
+    <a class="tool-card" href="passaporte-entrega-nexus-r.html">
+      <div class="tool-icon">📦</div>
+      <div class="tool-info">
+        <div class="tool-name">Passaporte de Entrega</div>
+        <div class="tool-desc">Gere o documento oficial de entrega de projetos com QR Code, link de acesso, credenciais e primeiros passos.</div>
+        <div class="tool-tag">ENTREGA DE PROJETO</div>
       </div>
-    </div>
+      <div class="tool-arrow">→</div>
+    </a>
 
-    <div class="pp-body">
-
-      <div class="pp-top-section">
-        <div class="pp-client-block">
-          <div class="pp-section-label">Entregue a</div>
-          <div class="pp-client-name" id="ppNome"></div>
-          <div class="pp-client-company" id="ppEmpresa"></div>
-          <div class="pp-project-tag" id="ppProjeto"></div>
-        </div>
-        <div class="pp-qr-block">
-          <div class="pp-qr-wrap">
-            <div id="qrcode"></div>
-          </div>
-          <div class="pp-qr-label">Escaneie para acessar</div>
-        </div>
-      </div>
-
-      <div class="pp-access-box">
-        <div class="pp-section-label">🔗 Link de Acesso</div>
-        <div class="pp-url" id="ppURL"></div>
-        <div class="pp-url-note">Salve este link nos favoritos do navegador para acesso rápido</div>
-      </div>
-
-      <div class="pp-creds" id="ppCredsBlock"></div>
-
-      <div class="pp-steps">
-        <div class="pp-section-label">🚀 Primeiros Passos</div>
-        <div id="ppPassos"></div>
-      </div>
-
-      <div class="pp-notes" id="ppNotasBlock" style="display:none">
-        <strong>📌 Observações:</strong> <span id="ppNotas"></span>
-      </div>
-
-    </div>
-
-    <div class="pp-footer">
-      <div>
-        <div class="pp-footer-label">Suporte & Contato</div>
-        <div class="pp-footer-name">Anderson Silva — NEXUS-R</div>
-        <div class="pp-footer-sub">(11) 94771-8044 · @nexus_risk · Inteligência em Risco e Performance</div>
-      </div>
-      <a class="pp-wa-btn" href="https://wa.me/5511947718044?text=Olá%20Anderson!%20Tenho%20uma%20dúvida%20sobre%20o%20projeto%20entregue." target="_blank">💬 Suporte WhatsApp</a>
-    </div>
-
-    <div class="pp-bar"></div>
   </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-function gerarPassaporte() {
-  const nome     = document.getElementById('clienteNome').value.trim();
-  const empresa  = document.getElementById('clienteEmpresa').value.trim();
-  const projeto  = document.getElementById('projetoNome').value.trim();
-  const url      = document.getElementById('projetoURL').value.trim();
-  const login    = document.getElementById('login').value.trim();
-  const senha    = document.getElementById('senha').value.trim();
-  const notas    = document.getElementById('notas').value.trim();
-  const passo1   = document.getElementById('passo1').value.trim();
-  const passo2   = document.getElementById('passo2').value.trim();
-  const passo3   = document.getElementById('passo3').value.trim();
+  <div class="footer">
+    Anderson Silva · <span>(11) 94771-8044</span> · @nexus_risk
+  </div>
 
-  if (!nome)    { alert('Informe o nome do cliente.'); return; }
-  if (!empresa) { alert('Informe a empresa.'); return; }
-  if (!projeto) { alert('Informe o nome do projeto.'); return; }
-  if (!url)     { alert('Informe a URL de acesso.'); return; }
-
-  // Data
-  const now = new Date();
-  document.getElementById('ppData').textContent = now.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
-
-  // Cliente / projeto
-  document.getElementById('ppNome').textContent = nome;
-  document.getElementById('ppEmpresa').textContent = empresa;
-  document.getElementById('ppProjeto').textContent = '📦 ' + projeto;
-
-  // URL
-  document.getElementById('ppURL').innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
-
-  // Credenciais
-  const credsBlock = document.getElementById('ppCredsBlock');
-  if (login || senha) {
-    credsBlock.innerHTML =
-      (login ? `<div class="pp-cred"><div class="pp-cred-label">Login / Usuário</div><div class="pp-cred-value">${login}</div></div>` : '') +
-      (senha ? `<div class="pp-cred"><div class="pp-cred-label">Senha de Acesso</div><div class="pp-cred-value">${senha}</div></div>` : '');
-  } else {
-    credsBlock.innerHTML = '';
-  }
-
-  // Passos
-  document.getElementById('ppPassos').innerHTML =
-    [passo1, passo2, passo3].filter(Boolean).map((p, i) =>
-      `<div class="pp-step-row">
-         <div class="pp-step-num">${i + 1}</div>
-         <div class="pp-step-text">${p}</div>
-       </div>`
-    ).join('');
-
-  // Observações
-  if (notas) {
-    document.getElementById('ppNotas').textContent = notas;
-    document.getElementById('ppNotasBlock').style.display = 'block';
-  } else {
-    document.getElementById('ppNotasBlock').style.display = 'none';
-  }
-
-  // QR Code
-  const qrEl = document.getElementById('qrcode');
-  qrEl.innerHTML = '';
-  new QRCode(qrEl, {
-    text: url,
-    width: 120,
-    height: 120,
-    colorDark: '#080a0f',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
-
-  // Exibe preview
-  document.getElementById('formScreen').style.display = 'none';
-  document.getElementById('previewScreen').style.display = 'block';
-  window.scrollTo(0, 0);
-}
-
-function voltar() {
-  document.getElementById('previewScreen').style.display = 'none';
-  document.getElementById('formScreen').style.display = 'block';
-  window.scrollTo(0, 0);
-}
-</script>
 </body>
 </html>
