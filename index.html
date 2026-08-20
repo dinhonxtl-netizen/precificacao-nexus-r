@@ -157,8 +157,53 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
   .client-info { grid-template-columns: 1fr; }
   .cta-buttons { grid-template-columns: 1fr; }
   .preco-unico-grid { grid-template-columns: 1fr; }
+  .pa-discount-bar { flex-direction: column; align-items: flex-start; }
+  .pa-price-input { width: 110px; }
+  .pa-actions { flex-direction: column; }
 }
 @media print { .no-print { display: none !important; } }
+
+/* ─── PROPOSTA ACEITA (step 7) ─── */
+.pa-header { background: linear-gradient(135deg,#1a1400,#0d1018); border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+.pa-header h2 { font-size: 20px; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+.pa-header p { font-size: 12px; color: var(--muted); }
+.pa-badge { display: inline-block; background: var(--gold); color: #000; font-size: 10px; font-weight: 900; padding: 3px 12px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 10px; }
+.pa-price-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.pa-price-table thead th { background: #161b26; color: var(--gold); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 10px 12px; text-align: left; }
+.pa-price-table thead th:last-child { text-align: right; }
+.pa-price-table tbody tr { border-bottom: 1px solid #222840; }
+.pa-price-table tbody tr:nth-child(even) { background: #0f1219; }
+.pa-price-table tbody td { padding: 10px 12px; vertical-align: middle; }
+.pa-service-name { font-weight: 700; color: var(--white); font-size: 13px; }
+.pa-service-pilar { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+.pa-price-input { background: #0d1018; border: 1.5px solid #333; border-radius: 8px; color: var(--gold); font-size: 14px; font-weight: 700; padding: 8px 10px; text-align: right; width: 130px; font-family: inherit; transition: border-color .2s; }
+.pa-price-input:focus { outline: none; border-color: var(--gold); }
+.pa-ref-val { font-size: 10px; color: var(--muted); text-align: right; margin-top: 3px; }
+.pa-discount-bar { background: #161b26; border: 1px solid #2a3050; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pa-discount-bar label { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.pa-disc-input { background: #0d1018; border: 1.5px solid #333; border-radius: 8px; color: var(--white); font-size: 14px; font-weight: 700; padding: 7px 10px; width: 72px; text-align: center; font-family: inherit; }
+.pa-disc-input:focus { outline: none; border-color: var(--gold); }
+.pa-disc-btn { background: var(--gold); color: #000; border: none; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.pa-disc-hint { font-size: 11px; color: var(--muted); flex: 1; min-width: 120px; }
+.pa-total-box { background: linear-gradient(135deg,#1a1400,#0d1018); border: 2px solid var(--gold); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; }
+.pa-total-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.pa-total-value { font-size: 32px; font-weight: 900; color: var(--gold); }
+.pa-total-breakdown { font-size: 12px; color: #4caf50; margin-top: 8px; }
+.pa-notes-section { margin-top: 24px; }
+.pa-notes-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #2a3050; }
+.pa-note-card { background: #11141d; border-radius: 10px; padding: 14px; margin-bottom: 10px; border-left: 3px solid #2a3050; }
+.pa-note-service { font-size: 12px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.pa-note-row { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.5; margin-bottom: 5px; }
+.pa-note-incluso { color: #4caf50; }
+.pa-note-extra { color: #e57373; }
+.pa-note-opcao { color: #90caf9; }
+.pa-note-icon { flex-shrink: 0; margin-top: 1px; }
+.pa-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; margin-bottom: 20px; }
+.cta-aceita { background: #27ae60; color: #fff; border: none; border-radius: 10px; padding: 13px 20px; font-size: 14px; font-weight: 700; cursor: pointer; flex: 1; transition: background .2s; }
+.cta-aceita:hover { background: #219150; }
+.pa-btn-pdf { background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer; flex: 1; min-width: 160px; }
+.pa-btn-back { background: transparent; color: var(--muted); border: 1.5px solid #2a3050; border-radius: 10px; padding: 13px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.pa-btn-back:hover { border-color: var(--gold); color: var(--white); }
 </style>
 </head>
 <body>
@@ -198,13 +243,62 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     <label>Segmento</label>
     <select id="segmento">
       <option value="">Selecione o segmento</option>
-      <option>Segurança Privada</option><option>Condomínio / Administradora</option>
-      <option>Varejo / Comércio</option><option>Barbearia / Beleza / Estética</option>
-      <option>Alimentação / Gastronomia</option><option>Saúde / Clínica / Hospital</option>
-      <option>Saúde Mental / Psicologia</option><option>Indústria / Logística</option>
-      <option>Educação / Escola</option><option>Academia / Fitness</option>
-      <option>Tecnologia</option><option>Advocacia / Escritório</option>
-      <option>Eventos</option><option>Construção Civil</option><option>Outro</option>
+      <optgroup label="🛡️ Segurança & Portaria">
+        <option>Segurança Privada</option>
+        <option>Portaria / Controle de Acesso</option>
+        <option>Monitoramento / CFTV</option>
+      </optgroup>
+      <optgroup label="🏢 Condomínios & Facilities">
+        <option>Condomínio / Administradora</option>
+        <option>Síndico Profissional</option>
+        <option>Zeladoria / Manutenção Predial</option>
+      </optgroup>
+      <optgroup label="🛍️ Varejo & Comércio">
+        <option>Varejo / Comércio</option>
+        <option>Loja de Rua</option>
+        <option>Shopping / Franquia</option>
+      </optgroup>
+      <optgroup label="💇 Beleza, Estética & Bem-estar">
+        <option>Barbearia / Beleza / Estética</option>
+        <option>Salão de Beleza</option>
+        <option>Spa / Wellness</option>
+      </optgroup>
+      <optgroup label="🍽️ Alimentação & Hospitalidade">
+        <option>Alimentação / Gastronomia</option>
+        <option>Bar / Restaurante</option>
+        <option>Hotelaria / Hospedagem</option>
+      </optgroup>
+      <optgroup label="🏥 Saúde">
+        <option>Saúde / Clínica / Hospital</option>
+        <option>Saúde Mental / Psicologia</option>
+        <option>Odontologia</option>
+      </optgroup>
+      <optgroup label="🏭 Indústria & Logística">
+        <option>Indústria / Logística</option>
+        <option>Armazém / Galpão</option>
+        <option>Transporte / Frota</option>
+      </optgroup>
+      <optgroup label="🎓 Educação">
+        <option>Educação / Escola</option>
+        <option>Faculdade / Curso Livre</option>
+        <option>Creche / Educação Infantil</option>
+      </optgroup>
+      <optgroup label="💼 Serviços Profissionais & Corporativo">
+        <option>Advocacia / Escritório</option>
+        <option>Contabilidade / Financeiro</option>
+        <option>Consultoria / Corporativo</option>
+      </optgroup>
+      <optgroup label="💻 Tecnologia, Eventos & Construção">
+        <option>Tecnologia</option>
+        <option>Eventos</option>
+        <option>Construção Civil</option>
+        <option>Imobiliária</option>
+      </optgroup>
+      <optgroup label="🏋️ Fitness, Entretenimento & Outros">
+        <option>Academia / Fitness</option>
+        <option>Entretenimento / Lazer</option>
+        <option>Outro</option>
+      </optgroup>
     </select>
   </div>
   <div class="form-row">
@@ -295,7 +389,7 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
   <div class="step-title">🎯 Principais Desafios</div>
   <div class="step-sub">Marque todos que se aplicam. Isso define os serviços recomendados.</div>
   <div class="option-grid" id="desafiosGrid">
-    <label class="option-card" onclick="toggleCheck(this,'desafio_risco')"><input type="checkbox" name="desafios" value="desafio_risco"><div class="option-icon">🛡️</div><div class="option-text"><strong>Riscos não mapeados</strong><span>Não sei se a operação está segura</span></div><div class="check-mark"></div></label>
+    <label class="option-card" onclick="toggleCheck(this,'desafio_risco')"><input type="checkbox" name="desafios" value="desafio_risco"><div class="option-icon">🛡️</div><div class="option-text"><strong>Riscos não mapeados</strong><span>Não sei se a operação está segura · <span style="color:var(--gold);font-weight:600">recomenda Análise de Risco</span></span></div><div class="check-mark"></div></label>
     <label class="option-card" onclick="toggleCheck(this,'desafio_nr01')"><input type="checkbox" name="desafios" value="desafio_nr01"><div class="option-icon">📋</div><div class="option-text"><strong>Adequação NR-01</strong><span>Precisamos regularizar riscos psicossociais</span></div><div class="check-mark"></div></label>
     <label class="option-card" onclick="toggleCheck(this,'desafio_equipe')"><input type="checkbox" name="desafios" value="desafio_equipe"><div class="option-icon">👥</div><div class="option-text"><strong>Equipe sem treinamento</strong><span>Nossa equipe precisa de capacitação</span></div><div class="check-mark"></div></label>
     <label class="option-card" onclick="toggleCheck(this,'desafio_atendimento')"><input type="checkbox" name="desafios" value="desafio_atendimento"><div class="option-icon">🤝</div><div class="option-text"><strong>Qualidade no atendimento</strong><span>Recepção, portaria ou cliente final</span></div><div class="check-mark"></div></label>
@@ -388,6 +482,7 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
     <button class="cta-pdf" onclick="generatePDF()">📄 Baixar PDF</button>
     <a class="cta-whatsapp" href="https://wa.me/5511947718044?text=Olá%20Anderson!%20Gerei%20uma%20proposta%20pelo%20app%20da%20Nexus-R." target="_blank">💬 WhatsApp</a>
   </div>
+  <button class="cta-aceita no-print" onclick="openPropostaAceita()">✅ Proposta Aceita — Fechar Contrato</button>
   <button class="cta-vcard no-print" onclick="downloadVCard()">📱 Salvar Contato NEXUS-R</button>
   <button class="cta-back-tipo no-print" onclick="goStep(4)">🔄 Alterar tipo de proposta</button>
   <button class="btn-clear-proposal no-print" onclick="confirmClear()">🗑️ Limpar Histórico / Nova Proposta (LGPD)</button>
@@ -397,8 +492,43 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--
       <span id="intToggleIcon">▶</span>
     </div>
     <div id="internalNotesContent" style="display:none">
+      <button class="no-print" onclick="event.stopPropagation();generateInternalNotesPDF()" style="background:#1e2a1a;color:#a0c880;border:1px solid #3a4a30;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:6px">📄 Baixar PDF — Notas Internas</button>
       <div id="internalNotesList"></div>
     </div>
+  </div>
+  <div class="validity">NEXUS-R Inteligência em Risco · @nexus_risk · 11 94771-8044</div>
+</div>
+
+
+<div id="step7" class="step">
+  <div class="pa-header">
+    <div class="pa-badge">✅ PROPOSTA ACEITA</div>
+    <h2 id="paNomeEmpresa">Contratação Confirmada</h2>
+    <p id="paDataEmissao"></p>
+  </div>
+  <div class="client-info" id="paClientInfo"></div>
+  <div class="section-label">Serviços Contratados — Ajuste os Valores</div>
+  <div class="pa-discount-bar">
+    <label>Desconto Global</label>
+    <input type="number" class="pa-disc-input" id="paDiscPct" min="0" max="100" value="0" placeholder="0">
+    <span style="color:var(--muted);font-size:13px;font-weight:700">%</span>
+    <button class="pa-disc-btn" onclick="applyGlobalDiscount()">Aplicar</button>
+    <span class="pa-disc-hint">Aplica o desconto em todos os serviços de uma vez</span>
+  </div>
+  <table class="pa-price-table">
+    <thead>
+      <tr>
+        <th>Serviço</th>
+        <th style="text-align:right;width:160px">Valor Final (R$)</th>
+      </tr>
+    </thead>
+    <tbody id="paPriceRows"></tbody>
+  </table>
+  <div class="pa-total-box" id="paTotalBox"></div>
+  <div class="pa-notes-section" id="paNotesSection"></div>
+  <div class="pa-actions no-print">
+    <button class="pa-btn-pdf" onclick="downloadContratacaoPDF()">📄 Baixar PDF de Contratação</button>
+    <button class="pa-btn-back" onclick="voltarParaProposta()">← Voltar à Proposta</button>
   </div>
   <div class="validity">NEXUS-R Inteligência em Risco · @nexus_risk · 11 94771-8044</div>
 </div>
@@ -424,7 +554,7 @@ const PRICING = {
   // ── DIAGNÓSTICO & RISCO ──
   visita_tecnica: { nome:'Visita Técnica / Consulta Presencial', pilar:'🛡️ Segurança & Risco', prazo:'Agendamento em até 5 dias', interno:'💡 POLÍTICA: cobrar e abater no projeto se fechar contrato. ✅ Incluso: até 2h de visita, escuta ativa e levantamento preliminar. ❌ Extra: 2ª visita antes da proposta = cobrar igual. Deslocamento fora de SP/Grande SP = combinar taxa de km.', micro:[300,500], pmicro:[350,600], pequena:[450,700], media:[550,900], grande:[700,1200], desc:'Visita presencial para entendimento da operação, levantamento de necessidades e diagnóstico preliminar antes da proposta formal' },
   analise_risco: { nome:'Análise de Risco Patrimonial', pilar:'🛡️ Segurança & Risco', prazo:'2–3 semanas', interno:'✅ Incluso: visita técnica, relatório + POPs. ❌ Extra: implantação de melhorias físicas (obra/equipamentos) = orçar separado.', micro:[2500,5000], pmicro:[2800,6000], pequena:[4000,9000], media:[7000,16000], grande:[14000,35000], desc:'Diagnóstico in loco, mapeamento de vulnerabilidades, relatório técnico com POPs e plano de ação' },
-  nr01_pgr: { nome:'NR-01 / PGR — Adequação e Implementação', pilar:'🛡️ Segurança & Risco', prazo:'3–5 semanas', interno:'✅ Incluso: elaboração do PGR, diagnóstico e relatório. ❌ Extra: acompanhamento de fiscalização e renovações anuais = cobrar separado. 💡 NÃO acumular com Saúde Org. (Axis): o PGR já inclui avaliação psicossocial básica. Saúde Org. é add-on só se o cliente quiser o programa completo da Dra. com relatório executivo separado.', micro:[3000,6000], pmicro:[3500,7500], pequena:[5500,12000], media:[9000,20000], grande:[18000,45000], desc:'Avaliação de riscos ocupacionais e psicossociais, elaboração do PGR conforme NR-01 rev. 2024' },
+  nr01_pgr: { nome:'NR-01 / PGR — Adequação e Implementação', pilar:'🛡️ Segurança & Risco', prazo:'3–5 semanas', interno:'✅ Incluso: elaboração do PGR, diagnóstico e relatório. ❌ Extra: acompanhamento de fiscalização e renovações anuais = cobrar separado. 💡 NÃO acumular com Saúde Org. (Axis): o PGR já inclui avaliação psicossocial básica. Saúde Org. é add-on só se o cliente quiser o programa completo da Dra. com relatório executivo separado.', micro:[3000,6000], pmicro:[3500,7500], pequena:[5500,12000], media:[10000,22000], grande:[20000,50000], desc:'Avaliação de riscos ocupacionais e psicossociais, elaboração do PGR conforme NR-01 rev. 2024' },
   saude_org: { nome:'Diagnóstico Estratégico de Riscos Psicossociais (AXIS)', pilar:'🧠 Psicossocial AXIS (Parceria)', prazo:'15 a 30 dias', interno:'⚠️ SERVIÇO DA DRA. PARCEIRA AXIS — NEXUS-R capta e coordena. ✅ Incluso: kick-off, levantamento documental, entrevistas (direção/RH/lideranças), Plataforma Axis, 12 eixos avaliados, matriz de riscos, relatório executivo, plano estratégico inicial, devolutiva executiva (90 min). ❌ NÃO inclui: testes individuais, implantação do plano, treinamentos. 💡 Etapa 1 do fluxo AXIS. Após o diagnóstico, o cliente pode contratar Investigação Setorial, Avaliação Individual ou Gestão Contínua.', micro:[4900,4900], pmicro:[4900,4900], pequena:[6900,6900], media:[9900,9900], grande:[14900,14900], desc:'Diagnóstico aprofundado com 12 eixos (clima, liderança, saúde mental, burnout, turnover…), Plataforma Axis, relatório executivo e devolutiva de 90 min — realizado pela Dra. parceira' },
   axis_investigacao: { nome:'Investigação Psicossocial Setorial (AXIS)', pilar:'🧠 Psicossocial AXIS (Parceria)', prazo:'A combinar por setor', interno:'⚠️ SERVIÇO DA DRA. PARCEIRA AXIS — valor por setor investigado (R$ 2.500/setor, mínimo). ✅ Incluso: instrumentos específicos, entrevistas individuais, grupos focais, avaliação de liderança, relações interpessoais, relatório setorial + plano de intervenção. 💡 Contratado após o Diagnóstico Estratégico quando há setores críticos identificados.', micro:[2500,2500], pmicro:[2500,5000], pequena:[5000,7500], media:[5000,10000], grande:[7500,15000], desc:'Investigação aprofundada de setores críticos identificados no diagnóstico: entrevistas, grupos focais, relatório setorial e plano de intervenção — R$ 2.500 por setor' },
   axis_avaliacao_ind: { nome:'Avaliação Psicossocial Individual (AXIS)', pilar:'🧠 Psicossocial AXIS (Parceria)', prazo:'A combinar por volume', interno:'⚠️ SERVIÇO DA DRA. PARCEIRA AXIS — R$ 250/colaborador. Pacotes acima de 30 colaboradores sob consulta. ✅ Incluso: entrevista, instrumentos psicológicos (quando indicados), correção, integração dos resultados, parecer psicológico individual. 💡 Indicado somente quando o Diagnóstico Estratégico aponta necessidade técnica individual.', micro:[750,2500], pmicro:[2750,5000], pequena:[5250,12500], media:[12750,25000], grande:[25000,50000], desc:'Avaliação individual com entrevista, instrumentos psicológicos e parecer — R$ 250 por colaborador (contratada somente quando indicada pelo diagnóstico)' },
@@ -432,9 +562,10 @@ const PRICING = {
   axis_palestra: { nome:'Palestra Corporativa AXIS', pilar:'🧠 Psicossocial AXIS (Parceria)', prazo:'2–4h', interno:'⚠️ SERVIÇO DA DRA. PARCEIRA AXIS — a partir de R$ 1.500. ✅ Temas: saúde mental, prevenção de burnout, comunicação assertiva, inteligência emocional e outros. 💡 Produto complementar — boa porta de entrada para contratos maiores.', micro:[1500,2000], pmicro:[1500,2500], pequena:[1500,3000], media:[2000,4000], grande:[3000,6000], desc:'Palestra corporativa sobre saúde mental, burnout, comunicação ou liderança — realizada pela Dra. parceira (a partir de R$ 1.500)' },
   axis_workshop: { nome:'Workshop AXIS', pilar:'🧠 Psicossocial AXIS (Parceria)', prazo:'4–8h', interno:'⚠️ SERVIÇO DA DRA. PARCEIRA AXIS — a partir de R$ 2.500. 💡 Produto complementar com maior profundidade que a palestra.', micro:[2500,3500], pmicro:[2500,4000], pequena:[2500,5000], media:[3500,6000], grande:[5000,9000], desc:'Workshop prático sobre saúde psicossocial, liderança ou cultura organizacional — realizado pela Dra. parceira (a partir de R$ 2.500)' },
   mapeamento: { nome:'Mapeamento e Estruturação de Processos', pilar:'🛡️ Segurança & Risco', prazo:'3–5 semanas', interno:'✅ Incluso: diagnóstico, fluxogramas, POPs, checklists + 1 treinamento da equipe. ❌ Extra: revisões após implantação e novos processos = cobrar separado.', micro:[2000,4500], pmicro:[2500,5500], pequena:[4500,9000], media:[8000,18000], grande:[15000,30000], desc:'Diagnóstico, fluxogramas, POPs, checklists, implantação e capacitação da equipe nos novos processos' },
+  compliance_indicadores: { nome:'Compliance, Indicadores e Eficiência Operacional', pilar:'🛡️ Segurança & Risco', prazo:'3–4 semanas', interno:'✅ Incluso: diagnóstico de aderência a normas, definição de KPIs, painel de acompanhamento e recomendações de eficiência com estimativa de retorno. ❌ Extra: implantação de ferramenta de BI paga = repassar custo. 💡 Recorrência: mentoria mensal R$800–4.000 ou retainer R$4.000–9.000/mês conforme porte.', micro:[2000,4000], pmicro:[2500,5000], pequena:[4500,9000], media:[8000,18000], grande:[15000,30000], desc:'Diagnóstico de aderência a normas, definição de indicadores (KPIs), painel de acompanhamento e recomendações de eficiência com estimativa de retorno' },
 
   // ── TREINAMENTOS: SEGURANÇA OPERACIONAL ──
-  trein_portaria: { nome:'Portaria e Controle de Acesso', pilar:'🎓 Treinamentos', prazo:'4h (turma única) ou 2 sessões de 2h', interno:'✅ Incluso: conteúdo, material digital, certificado. ❌ Extra: turmas adicionais = 60% do valor. Acima de 20 alunos = R$80/aluno adicional. Sala por conta do cliente no in-company. 💡 Hora extra/follow-up: R$180–250/h. Pacote mensal (4 sessões): R$900–1.800/mês.', micro:[700,1500], pmicro:[1000,2200], pequena:[1800,3800], media:[3200,6500], grande:[5500,11000], desc:'Procedimentos de entrada e saída, registro de visitantes, controle de veículos, postura e protocolo de portaria' },
+  // trein_portaria removido — consolidado em curso_portaria (Formação Profissional CBO 5174)
   trein_ronda: { nome:'Ronda e Patrulhamento', pilar:'🎓 Treinamentos', prazo:'4h', interno:'✅ Incluso: conteúdo, material digital, certificado. ❌ Extra: turmas adicionais = 60% do valor. 💡 Hora extra: R$180–250/h.', micro:[700,1500], pmicro:[1000,2200], pequena:[1800,3800], media:[3000,6000], grande:[5000,10000], desc:'Técnicas de ronda, pontos de inspeção, registro de ocorrências e protocolos de patrulhamento' },
   trein_ocorrencias: { nome:'Gestão de Ocorrências', pilar:'🎓 Treinamentos', prazo:'4h', interno:'✅ Incluso: conteúdo, material digital, certificado. ❌ Extra: turmas adicionais = 60% do valor. 💡 Hora extra: R$180–250/h.', micro:[700,1500], pmicro:[1000,2200], pequena:[1800,3800], media:[3000,6000], grande:[5000,10000], desc:'Identificação, registro e acionamento correto de ocorrências, comunicação com órgãos de segurança pública' },
   trein_comunicacao_op: { nome:'Comunicação Operacional (Código Q / Rádio HT)', pilar:'🎓 Treinamentos', prazo:'4h', interno:'✅ Incluso: conteúdo, material digital, certificado. ❌ Extra: turmas adicionais = 60% do valor. 💡 Hora extra: R$180–250/h.', micro:[600,1300], pmicro:[900,1900], pequena:[1600,3200], media:[2800,5500], grande:[4500,9000], desc:'Uso correto do rádio HT, tabela de código Q, padronização de comunicação e redução de falhas operacionais' },
@@ -482,24 +613,39 @@ const PRICING = {
   curso_portaria: { nome:'Formação Profissional em Portaria (Turma CBO 5174)', pilar:'🎓 Treinamentos', prazo:'2–4 semanas (programa completo)', interno:'✅ Incluso: material didático, certificado digital CBO, avaliação de perfil IA, Guia de Empregabilidade SP. ❌ Extra: turmas adicionais cobrar por aluno extra. 💡 Este é o programa completo — diferente dos treinamentos pontuais. Hora extra pós-formação: R$180–250/h.', micro:[2500,5000], pmicro:[3000,6000], pequena:[5000,10000], media:[9000,18000], grande:[15000,28000], desc:'Formação CBO 5174, gestão emocional c/ psicóloga, avaliação de perfil IA, certificado digital, Guia de Empregabilidade SP' },
   reav_treinamento: { nome:'Reavaliação Pós-Treinamento (90 dias)', pilar:'🎓 Treinamentos', prazo:'1 dia (visita + relatório)', interno:'✅ Incluso: checklist de eficácia, observação de rotina, entrevista com liderança, relatório executivo com índice de absorção e pontos de melhoria. ❌ Extra: segunda reavaliação (180 dias) = cobrar 80% do valor. Reforço de treinamento identificado na reavaliação = orçar separado. 💡 Vender como ADD-ON vinculado ao treinamento original — aumenta percepção de valor e abre porta para recontratação.', micro:[600,1000], pmicro:[700,1200], pequena:[900,1600], media:[1200,2200], grande:[1800,3500], desc:'Visita de acompanhamento 90 dias após o treinamento: checklist de eficácia, entrevista com liderança e relatório com índice de absorção e plano de reforço' },
 
+  // ── TREINAMENTOS: TURMA ABERTA (Espaço NEXUS-R) — preço por participante, não por porte de empresa ──
+  turma_aberta_curta: { nome:'Turma Aberta — Curso Curto (4h)', pilar:'🎓 Treinamentos', prazo:'4h — vaga individual', interno:'💡 VALOR POR PARTICIPANTE (não por empresa) — Cowork Flynow, Metrô Conceição. ✅ Incluso: material didático, coffee break, certificado. ❌ Risco é seu: você paga o espaço independente da lotação — calcule o ponto de equilíbrio (a partir de 8 participantes) antes de abrir a turma.', micro:[150,280], pmicro:[150,280], pequena:[150,280], media:[150,280], grande:[150,280], desc:'Vaga individual em turma presencial no espaço NEXUS-R, com material didático, coffee break e certificado — preço por participante' },
+  turma_aberta_completa: { nome:'Turma Aberta — Curso Completo (8h)', pilar:'🎓 Treinamentos', prazo:'8h — vaga individual', interno:'💡 VALOR POR PARTICIPANTE — Cowork Flynow, Metrô Conceição. ✅ Incluso: material didático, coffee break, certificado. ❌ Ponto de equilíbrio sugerido: a partir de 8 participantes.', micro:[280,450], pmicro:[280,450], pequena:[280,450], media:[280,450], grande:[280,450], desc:'Vaga individual em turma presencial de 8h no espaço NEXUS-R, com material didático, coffee break e certificado — preço por participante' },
+  turma_aberta_formacao: { nome:'Turma Aberta — Formação (16h+)', pilar:'🎓 Treinamentos', prazo:'16h+ — vaga individual', interno:'💡 VALOR POR PARTICIPANTE — Cowork Flynow, Metrô Conceição. ✅ Incluso: material didático, coffee break, certificado. ❌ Ponto de equilíbrio sugerido: a partir de 10 participantes.', micro:[450,900], pmicro:[450,900], pequena:[450,900], media:[450,900], grande:[450,900], desc:'Vaga individual em programa de formação presencial (16h ou mais) no espaço NEXUS-R, com material didático, coffee break e certificado — preço por participante' },
+
+  // ── TREINAMENTOS: EAD E TRILHAS DE APRENDIZAGEM — preço por escopo de conteúdo, não por porte de empresa ──
+  ead_curso_curto: { nome:'EAD — Curso Curto Online (4 a 8h de conteúdo)', pilar:'🎓 Treinamentos', prazo:'1 a 2 módulos', interno:'✅ Incluso: projeto pedagógico, videoaulas narradas/animadas com IA, materiais de apoio, banco de questões, implantação em plataforma EAD. ❌ Extra: licença de plataforma paga = repassar custo. 💡 IA reduz seu custo interno de produção, mas o preço acompanha o valor entregue, não o custo.', micro:[1500,4000], pmicro:[1500,4000], pequena:[1500,4000], media:[1500,4000], grande:[1500,4000], desc:'Curso online curto (1 a 2 módulos): projeto pedagógico, videoaulas com IA, materiais de apoio, banco de questões e implantação em plataforma EAD' },
+  ead_trilha_media: { nome:'EAD — Trilha Média Online (20 a 40h)', pilar:'🎓 Treinamentos', prazo:'4 a 8 módulos', interno:'✅ Incluso: projeto pedagógico completo, videoaulas com IA, materiais de apoio, banco de questões, implantação e treinamento da equipe do cliente na plataforma. ❌ Extra: licença de plataforma paga = repassar custo.', micro:[6000,15000], pmicro:[6000,15000], pequena:[6000,15000], media:[6000,15000], grande:[6000,15000], desc:'Trilha de aprendizagem de 4 a 8 módulos: projeto pedagógico, videoaulas com IA, banco de questões, implantação em plataforma e treinamento da equipe' },
+  ead_trilha_completa: { nome:'EAD — Trilha Completa / Programa de Formação (60 a 100h)', pilar:'🎓 Treinamentos', prazo:'Programa de formação', interno:'✅ Incluso: projeto pedagógico completo, produção integral de conteúdo com IA, implantação em plataforma, configuração de progresso, treinamento da equipe. ❌ Extra: licença de plataforma paga = repassar custo.', micro:[18000,35000], pmicro:[18000,35000], pequena:[18000,35000], media:[18000,35000], grande:[18000,35000], desc:'Programa de formação completo (60 a 100h): projeto pedagógico, produção integral de conteúdo com IA, plataforma EAD configurada e equipe do cliente treinada para gerir' },
+
   // ── TECNOLOGIA ──
-  site_simples: { nome:'Site Simples (Landing Page + Captura de Leads)', pilar:'💻 Tecnologia & Digital', prazo:'2–3 semanas', interno:'✅ Incluso: até 5 seções, formulário de captura de leads, SEO básico, domínio 1 ano, hospedagem Vercel (free tier). ❌ Extra: atualizações de conteúdo R$150–300/h. Renovação domínio ano 2+ cobrar separado (~R$60/ano). Versão multilíngue = orçar como site_premium. Imagens/textos dependem do cliente enviar material.', micro:[1200,2500], pmicro:[1500,3000], pequena:[2500,5000], media:[4000,8000], grande:[7000,15000], desc:'Site responsivo com até 5 seções, formulário de captura de leads, SEO básico, domínio e hospedagem 1 ano' },
-  site_premium: { nome:'Site Premium (Multilíngue, FAQ, Blog, Leads, Área do Cliente)', pilar:'💻 Tecnologia & Digital', prazo:'4–6 semanas', interno:'✅ Incluso: múltiplas seções, multilíngue (PT/EN/ES), FAQ, blog, captura de leads avançada, diagnóstico interativo, SEO avançado, domínio 1 ano, hospedagem Vercel (free tier ou Pro). ❌ Extra: atualizações R$150–300/h. Domínio ano 2+ cobrar separado. Área do cliente/login = funcionalidade adicional a orçar. Imagens/textos = responsabilidade do cliente.', micro:[2500,5000], pmicro:[3200,6500], pequena:[5500,11000], media:[9000,20000], grande:[16000,35000], desc:'Site completo multilíngue, FAQ interativo, blog, múltiplas capturas de leads, diagnóstico e SEO avançado' },
+  site_simples: { nome:'Site Simples (Landing Page + Captura de Leads)', pilar:'💻 Tecnologia & Digital', prazo:'2–3 semanas', interno:'✅ Incluso: até 5 seções, formulário de captura de leads, SEO básico, domínio 1 ano, hospedagem Vercel (free tier). ❌ Extra: atualizações de conteúdo R$150–300/h. Renovação domínio ano 2+ cobrar separado (~R$60/ano). Versão multilíngue = orçar como site_premium. Imagens/textos dependem do cliente enviar material.', micro:[1400,2800], pmicro:[1800,3600], pequena:[2200,4500], media:[4500,9000], grande:[9000,20000], desc:'Site responsivo com até 5 seções, formulário de captura de leads, SEO básico, domínio e hospedagem 1 ano' },
+  site_leads: { nome:'Site com Captação de Leads (Conversão + CRM)', pilar:'💻 Tecnologia & Digital', prazo:'3–4 semanas', interno:'✅ Incluso: tudo do Site Simples, mais formulário de captação com envio automático de e-mail, estrutura de conversão (CTAs, prova social, seções de oferta), integração com planilha/CRM, Google Search Console + sitemap + robots.txt, Google Analytics. ❌ Extra: CRM pago (assinatura) = repassar custo ao cliente. Manutenção: R$250–2.500/mês conforme porte.', micro:[2800,5500], pmicro:[3200,6200], pequena:[3500,7000], media:[7000,15000], grande:[15000,30000], desc:'Site com formulário de captação integrado, estrutura de conversão, integração com CRM/planilha, Search Console e Analytics configurados' },
+  site_premium: { nome:'Site Premium (Multilíngue, FAQ, Blog, Leads, Área do Cliente)', pilar:'💻 Tecnologia & Digital', prazo:'4–6 semanas', interno:'✅ Incluso: múltiplas seções, multilíngue (PT/EN/ES), FAQ, blog, captura de leads avançada, diagnóstico interativo, SEO avançado, domínio 1 ano, hospedagem Vercel (free tier ou Pro). ❌ Extra: atualizações R$150–300/h. Domínio ano 2+ cobrar separado. Área do cliente/login = funcionalidade adicional a orçar. Imagens/textos = responsabilidade do cliente.', micro:[5000,9000], pmicro:[6500,12000], pequena:[8000,15000], media:[15000,30000], grande:[30000,60000], desc:'Site completo multilíngue, FAQ interativo, blog, múltiplas capturas de leads, diagnóstico e SEO avançado' },
   app_mvp: { nome:'App Web / Dashboard / Sistema sob Medida', pilar:'💻 Tecnologia & Digital', prazo:'6–10 semanas', interno:'✅ Incluso: hospedagem Vercel 12 meses (free tier), 30 dias suporte técnico pós-entrega, documentação básica. ❌ Extra: atualizações R$150–300/h · novas funcionalidades = novo orçamento · manutenção mensal após 30 dias: R$500–1.200/mês · mudança de logo/cores R$300–500.', micro:[4500,10000], pmicro:[6000,13000], pequena:[10000,22000], media:[18000,40000], grande:[35000,80000], desc:'App web funcional com autenticação, banco de dados, painel admin, LGPD compliant — testado e documentado' },
   app_personalizado: { nome:'App Personalizado (como ClaraMente / App da Dra.)', pilar:'💻 Tecnologia & Digital', prazo:'8–14 semanas', interno:'✅ Incluso: levantamento de requisitos, UI/UX, desenvolvimento completo, testes, hospedagem 12 meses, documentação. ❌ Extra: integrações com APIs pagas (repassar custo). Manutenção mês 2+ = R$800–2.000/mês. Novas funcionalidades = novo orçamento.', micro:null, pmicro:null, pequena:[15000,35000], media:[30000,70000], grande:[60000,150000], desc:'Aplicativo personalizado com IA, múltiplos módulos, integrações avançadas, UX refinada e identidade visual própria' },
-  animacao: { nome:'Animação com IA (por vídeo)', pilar:'💻 Tecnologia & Digital', prazo:'5–7 dias úteis', interno:'✅ Incluso: 2 rodadas de revisão por vídeo. ❌ Extra: 3ª revisão R$150/ajuste. Locução humana não inclusa.', micro:[500,1500], pmicro:[700,1800], pequena:[1200,2800], media:[2000,4500], grande:[3500,7000], desc:'Animação profissional com identidade visual, trilha, legenda, formato para Instagram/YouTube/Reels' },
+  animacao: { nome:'Animação com IA (por vídeo)', pilar:'💻 Tecnologia & Digital', prazo:'5–7 dias úteis', interno:'✅ Incluso: 2 rodadas de revisão por vídeo. ❌ Extra: 3ª revisão R$150/ajuste. Locução humana não inclusa.', micro:[700,1800], pmicro:[900,2200], pequena:[1400,3000], media:[2200,5500], grande:[4000,10000], desc:'Animação profissional com identidade visual, trilha, legenda, formato para Instagram/YouTube/Reels' },
   pacote_animacoes: { nome:'Pacote Mensal de Animações (3–5 vídeos)', pilar:'💻 Tecnologia & Digital', prazo:'Recorrente — entrega semanal', interno:'✅ Incluso: criação + 2 revisões/mês. ❌ Extra: vídeos fora do pacote cobrar avulso. Cancelamento: avisar 15 dias antes.', micro:[1200,2500], pmicro:[1600,3200], pequena:[2500,5000], media:[4000,8000], grande:[7000,14000], desc:'Entregas semanais com identidade visual padronizada, revisões incluídas — recorrente mensal' },
+  trilha_sonora: { nome:'Trilha Sonora Personalizada', pilar:'💻 Tecnologia & Digital', prazo:'1–2 semanas', interno:'✅ Incluso: briefing de identidade sonora, composição exclusiva (sem banco de músicas genéricas), versões adaptadas (longa/curta/assinatura de marca), licença de uso comercial em contrato, arquivos em WAV e MP3. ❌ Extra: novas versões após entrega = orçar separado. 💡 Identidade sonora completa para grandes marcas: sob consulta.', micro:[900,1500], pmicro:[900,1800], pequena:[1200,2200], media:[1800,4500], grande:[4500,15000], desc:'Composição sonora exclusiva com versões adaptadas (ambientação, redes sociais, assinatura de marca) e licença de uso comercial' },
   post_instagram: { nome:'Pacote Posts Instagram c/ Animação IA (mensal)', pilar:'💻 Tecnologia & Digital', prazo:'Recorrente — entrega semanal', interno:'✅ Incluso: 12–16 posts/mês + legendas + planejamento editorial + animações IA. ❌ Extra: stories separados R$200–400/mês. Tráfego pago não incluso. Cancelamento: 15 dias.', micro:[900,2200], pmicro:[1200,2800], pequena:[2000,4500], media:[3500,7500], grande:[6000,13000], desc:'Posts animados com IA + legendas para 12–16 publicações mensais, identidade visual padronizada e planejamento editorial' },
   design_grafico: { nome:'Design Gráfico / Identidade Visual', pilar:'💻 Tecnologia & Digital', prazo:'2–3 semanas', interno:'✅ Incluso: logo + guia de marca + 2 rodadas de revisão. ❌ Extra: aplicações extras (cartão, uniforme, banner) R$150–400/peça. Revisão extra R$150/rodada.', micro:[800,2500], pmicro:[1200,3500], pequena:[3000,7000], media:[6000,15000], grande:[12000,28000], desc:'Logo, paleta de cores, tipografia, elementos gráficos e guia de marca — identidade profissional completa' },
   apresentacao_exec: { nome:'Apresentação Executiva / Pitch Deck', pilar:'💻 Tecnologia & Digital', prazo:'1–2 semanas', interno:'✅ Incluso: até 20 slides + 2 rodadas de revisão. ❌ Extra: slides adicionais R$80/slide. Versão animada +40%. Atualização após 6 meses = 30% do valor.', micro:[800,2000], pmicro:[1200,2800], pequena:[2500,5500], media:[4500,10000], grande:[9000,20000], desc:'Apresentação profissional com storytelling visual, dados estratégicos e design executivo — até 20 slides' },
+  dashboard_corporativo: { nome:'Dashboard Corporativo (Indicadores em Tempo Real)', pilar:'💻 Tecnologia & Digital', prazo:'3–6 semanas', interno:'✅ Incluso: painel visual com indicadores em tempo real, filtros, exportação de relatórios, integração com fontes de dados do cliente. ❌ Extra: integrações com APIs pagas = repassar custo. Manutenção: R$300–2.000/mês conforme complexidade. 💡 Simples = até 8 indicadores; avançado = múltiplas fontes.', micro:[3500,7000], pmicro:[4000,10000], pequena:[6000,12000], media:[10000,20000], grande:[16000,25000], desc:'Painel visual com indicadores em tempo real, filtros, exportação de relatórios e integração com as fontes de dados existentes do cliente' },
+  portal_corporativo: { nome:'Portal Corporativo com Login (Área Restrita)', pilar:'💻 Tecnologia & Digital', prazo:'5–8 semanas', interno:'✅ Incluso: área restrita com login, comunicação interna, documentos, formulários, níveis de permissão por perfil de usuário. ❌ Extra: integrações com sistemas do cliente que exigem API paga = repassar custo. Manutenção: R$1.000–3.000/mês.', micro:[8000,15000], pmicro:[9000,18000], pequena:[10000,22000], media:[16000,28000], grande:[22000,35000], desc:'Portal corporativo com login, área restrita para comunicação interna, documentos e formulários, com níveis de permissão por perfil de usuário' },
 
   // ── INTELIGÊNCIA ARTIFICIAL ──
   agente_ia_basico: { nome:'Agente de IA — Básico (Chatbot / Atendimento)', pilar:'🤖 Inteligência Artificial', prazo:'2–3 semanas', interno:'✅ Incluso: setup + 3 meses de manutenção. ❌ Extra: mês 4+ cobrar R$300–600/mês. Integrações extras (CRM, ERP) = novo orçamento.', micro:[2500,4000], pmicro:[3000,5000], pequena:[4500,8000], media:[7000,14000], grande:[12000,22000], desc:'Setup + 3 meses de manutenção. Chatbot, FAQ inteligente, automação de atendimento via WhatsApp' },
   agente_ia_avancado: { nome:'Agente de IA — Avançado (Operacional + Relatórios)', pilar:'🤖 Inteligência Artificial', prazo:'5–8 semanas', interno:'✅ Incluso: setup + 3 meses de manutenção avançada. ❌ Extra: mês 4+ R$800–1.500/mês. Treinamento com dados do cliente pode exigir custo de API (repassar ao cliente).', micro:null, pmicro:null, pequena:[8000,16000], media:[14000,28000], grande:[25000,55000], desc:'Agente com acesso a dados da empresa, relatórios automáticos, análise de risco por IA e automações complexas' },
   agente_ia_autonomo: { nome:'Agente de IA — Autônomo Multiagente', pilar:'🤖 Inteligência Artificial', prazo:'8–12 semanas', interno:'✅ Incluso: arquitetura multiagente completa, treinamento com dados da operação, documentação, setup + 3 meses de manutenção. ❌ Extra: mês 4+ R$1.200–2.500/mês. Custo de APIs de IA (OpenAI, Anthropic etc) repassado ao cliente.', micro:null, pmicro:null, pequena:null, media:[25000,55000], grande:[50000,120000], desc:'Arquitetura multiagente autônoma: direção, POPs, análise de risco, treinamento e suporte operacional — como os agentes NEXUS-R' },
+  avatar_digital: { nome:'Avatar Digital com Voz Própria', pilar:'🤖 Inteligência Artificial', prazo:'2–4 semanas', interno:'✅ Incluso: clonagem de voz por IA (cliente ou porta-voz definido), criação do avatar alinhado à marca, primeiro lote de vídeos/roteiros, treinamento da equipe do cliente, termo de autorização de uso de voz e imagem. ❌ Extra: novos lotes de vídeo = orçar como vídeo com IA (animacao). 💡 Substitui locução humana tradicional (R$1.200–3.000/vídeo) com reaproveitamento ilimitado.', micro:[1200,2200], pmicro:[1400,2600], pequena:[1500,3000], media:[3000,7000], grande:[7000,20000], desc:'Clonagem de voz por IA, criação de avatar digital alinhado à marca, primeiro lote de vídeos e termo de autorização de uso de voz e imagem' },
 
   // ── MANUTENÇÃO & SUPORTE ──
-  manutencao_mensal: { nome:'Plano de Manutenção Mensal', pilar:'🔧 Manutenção & Suporte', prazo:'Recorrente — contrato mensal', interno:'✅ Incluso: até 3h/mês de ajustes + monitoramento + backup. ❌ Extra: horas excedentes R$150–250/h. Novos módulos = novo orçamento. Cancelamento: 30 dias.', micro:[400,800], pmicro:[500,1000], pequena:[700,1500], media:[1000,2500], grande:[1800,4500], desc:'Suporte técnico contínuo, ajustes mensais, monitoramento, backup e manutenção preventiva do sistema' },
+  manutencao_mensal: { nome:'Plano de Manutenção Mensal', pilar:'🔧 Manutenção & Suporte', prazo:'Recorrente — contrato mensal', interno:'✅ Incluso: até 3h/mês de ajustes + monitoramento + backup. ❌ Extra: horas excedentes R$150–250/h. Novos módulos = novo orçamento. Cancelamento: 30 dias.', micro:[400,800], pmicro:[500,1000], pequena:[700,1500], media:[1200,3000], grande:[2000,6000], desc:'Suporte técnico contínuo, ajustes mensais, monitoramento, backup e manutenção preventiva do sistema' },
   nova_funcionalidade: { nome:'Nova Funcionalidade / Módulo no Sistema', pilar:'🔧 Manutenção & Suporte', prazo:'3–8 semanas', interno:'✅ Incluso: levantamento, desenvolvimento, testes e entrega documentada. ❌ Extra: integrações com APIs pagas = repassar custo. Manutenção após 30 dias = incluir no plano mensal.', micro:[1500,4000], pmicro:[2000,5500], pequena:[4000,10000], media:[7000,18000], grande:[14000,35000], desc:'Novo módulo, tela ou integração em sistema já entregue — com levantamento, testes e documentação' },
   atualizacao_conteudo: { nome:'Atualização de Conteúdo (texto, imagem, documento)', pilar:'🔧 Manutenção & Suporte', prazo:'2–5 dias úteis', interno:'✅ Incluso: até 5 itens por sessão. ❌ Extra: acima de 5 itens cobrar nova sessão. Não inclui criação de design.', micro:[200,400], pmicro:[250,500], pequena:[350,700], media:[500,1000], grande:[800,2000], desc:'Atualização de textos, troca de imagens, inserção de documentos em site ou app já entregue' },
   correcao_bugs: { nome:'Correção de Erros (pós-garantia)', pilar:'🔧 Manutenção & Suporte', prazo:'1–5 dias úteis', interno:'✅ Incluso: diagnóstico + correção + reteste. ❌ Cobrar apenas FORA do período de garantia (30 dias pós-entrega). Dentro da garantia = grátis.', micro:[150,400], pmicro:[200,500], pequena:[300,700], media:[500,1200], grande:[800,2000], desc:'Identificação e correção de falhas técnicas em sistema ou site entregue, após período de garantia' },
@@ -534,6 +680,12 @@ const SERVICE_DIFFERENTIALS = {
   agente_ia_autonomo: ['🧠 Arquitetura multiagente: cada agente especializado trabalha em paralelo, 24h','🚀 Operação escalável sem contratar — o sistema cresce junto com a empresa'],
   manutencao_mensal: ['🔒 Sistema monitorado — você descobre problemas antes do cliente e corrige sem impacto'],
   post_instagram: ['📅 Consistência nas redes é o que o algoritmo premia — presença semanal constrói audiência qualificada'],
+  compliance_indicadores: ['📊 Indicadores claros tiram a gestão do "achismo" — decisões viram dado, não intuição','🎯 Painel de acompanhamento revela onde o dinheiro está vazando antes que vire prejuízo'],
+  site_leads: ['📥 Leads capturados automaticamente, direto na sua planilha ou CRM — sem trabalho manual','📈 Estrutura de conversão pensada para vender, não só para existir'],
+  dashboard_corporativo: ['📊 Indicadores em tempo real substituem planilhas manuais e decisões atrasadas','🎯 Você enxerga o que está acontecendo na operação sem esperar relatório mensal'],
+  portal_corporativo: ['🔐 Área restrita organiza comunicação interna e documentos num só lugar, com controle de acesso','📁 Fim do "não achei o arquivo" — tudo documentado e permissionado por perfil'],
+  avatar_digital: ['🎭 Avatar com sua voz grava conteúdo ilimitado sem precisar gravar de novo toda semana','💰 Substitui locutor humano (R$1.200–3.000/vídeo) com reaproveitamento ilimitado do mesmo investimento'],
+  trilha_sonora: ['🎵 Identidade sonora exclusiva — marca reconhecida também pelo ouvido, não só pela imagem','⚖️ Licença de uso comercial própria: zero risco de direito autoral de banco de músicas genérico'],
 };
 
 const UNIVERSAL_DIFFERENTIALS = [
@@ -545,20 +697,20 @@ const CHALLENGE_MAP = {
   desafio_visita:     ['visita_tecnica'],
   desafio_risco:      ['analise_risco'],
   desafio_nr01:       ['nr01_pgr'],
-  desafio_equipe:     ['trein_portaria', 'reav_treinamento'],
+  desafio_equipe:     ['curso_portaria', 'reav_treinamento', 'ead_trilha_media'],
   desafio_atendimento:['trein_atendimento_geral', 'trein_cnv', 'reav_treinamento'],
-  desafio_processos:  ['mapeamento'],
+  desafio_processos:  ['mapeamento', 'compliance_indicadores'],
   desafio_lideres:    ['trein_lideres', 'reav_treinamento'],
   desafio_saude:      ['saude_org', 'reav_treinamento'],
-  desafio_digital:    ['site_simples', 'design_grafico'],
-  desafio_app:        ['app_mvp'],
-  desafio_conteudo:   ['animacao', 'pacote_animacoes'],
-  desafio_ia:         ['agente_ia_basico'],
+  desafio_digital:    ['site_simples', 'site_leads', 'design_grafico'],
+  desafio_app:        ['app_mvp', 'dashboard_corporativo', 'portal_corporativo'],
+  desafio_conteudo:   ['animacao', 'pacote_animacoes', 'avatar_digital', 'trilha_sonora'],
+  desafio_ia:         ['agente_ia_basico', 'avatar_digital'],
 };
 
 const SERVICE_ICONS = {
   visita_tecnica:'📍', analise_risco:'🛡️', nr01_pgr:'📋', saude_org:'🧠', mapeamento:'⚙️',
-  trein_portaria:'🚪', trein_ronda:'👁️', trein_ocorrencias:'🚨', trein_comunicacao_op:'📻',
+  trein_ronda:'👁️', trein_ocorrencias:'🚨', trein_comunicacao_op:'📻',
   trein_atendimento_geral:'🤝', trein_atendimento_varejo:'🛍️', trein_atendimento_condo:'🏠', trein_protocolo:'🎩',
   trein_cnv:'💬', trein_conflitos:'⚖️', trein_diversidade:'🌈', trein_violencia_dom:'🛑', trein_escolar:'🏫', trein_abordagem:'🫶',
   trein_protecao_pessoal:'🥋', trein_forca_progressiva:'✋', trein_contrainteligencia:'🔍',
@@ -571,6 +723,9 @@ const SERVICE_ICONS = {
   animacao:'✨', pacote_animacoes:'📹', post_instagram:'📸', design_grafico:'🎨', apresentacao_exec:'📊',
   agente_ia_basico:'🤖', agente_ia_avancado:'🤖', agente_ia_autonomo:'🧬',
   manutencao_mensal:'🔧', nova_funcionalidade:'⚡', atualizacao_conteudo:'✏️', correcao_bugs:'🐛',
+  compliance_indicadores:'📊', turma_aberta_curta:'🪑', turma_aberta_completa:'🪑', turma_aberta_formacao:'🎓',
+  ead_curso_curto:'💻', ead_trilha_media:'💻', ead_trilha_completa:'🎓',
+  site_leads:'📥', dashboard_corporativo:'📊', portal_corporativo:'🔐', avatar_digital:'🎭', trilha_sonora:'🎵',
 };
 
 const PILAR_ORDER = ['🛡️ Segurança & Risco','🧠 Psicossocial AXIS (Parceria)','🎓 Treinamentos','💻 Tecnologia & Digital','🤖 Inteligência Artificial','🔧 Manutenção & Suporte'];
@@ -672,10 +827,12 @@ function buildServicePicker(){
       const target=calcTarget(range[0],range[1]);
       const cotacao=Math.round(target*1.2/50)*50;
       const isRec=recommended.has(key);
+      // Preserva seleção anterior do usuário; nunca auto-seleciona (apenas mostra ★ rec. como sugestão)
+      const wasSelected=state.servicosSelecionados.includes(key);
       const card=document.createElement('div');
-      card.className='service-pick-card'+(isRec?' selected':'');
+      card.className='service-pick-card'+(wasSelected?' selected':'');
       card.dataset.key=key;
-      card.innerHTML=`<span class="sp-icon">${SERVICE_ICONS[key]||'📌'}</span><div class="sp-text"><strong>${p.nome}${isRec?'<span class="sp-rec">★ rec.</span>':''}</strong><span>Alvo: R$${fmt(target)} · Cotação: R$${fmt(cotacao)} · Faixa: R$${fmt(range[0])}–R$${fmt(range[1])}</span></div><div class="sp-check">${isRec?'✓':''}</div>`;
+      card.innerHTML=`<span class="sp-icon">${SERVICE_ICONS[key]||'📌'}</span><div class="sp-text"><strong>${p.nome}${isRec?'<span class="sp-rec">★ rec.</span>':''}</strong><span>Alvo: R$${fmt(target)} · Cotação: R$${fmt(cotacao)} · Faixa: R$${fmt(range[0])}–R$${fmt(range[1])}</span></div><div class="sp-check">${wasSelected?'✓':''}</div>`;
       card.onclick=()=>selectServiceCard(card,key);
       grid.appendChild(card);
     });
@@ -833,6 +990,27 @@ function generatePDF(){
 }
 
 // =============================================
+// PDF — NOTAS INTERNAS (uso exclusivo NEXUS-R)
+// =============================================
+function generateInternalNotesPDF(){
+  const itens=(state.servicos||[]).filter(s=>s.interno);
+  if(!itens.length){alert('Nenhuma nota interna disponível para os serviços selecionados.');return;}
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const itensHTML=itens.map(s=>`<div class="ns"><div class="nsn">📦 ${s.nome}</div><div class="nst">${s.interno}</div></div>`).join('');
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Notas Internas — ${state.empresa||'Proposta'}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#080a0f;color:#f0f0f0;padding:30px 40px;max-width:800px;margin:0 auto}.gold-bar{height:4px;background:#7ab560;border-radius:2px;margin-bottom:24px}.header{background:#10131a;border:2px solid #7ab560;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px}.header .tag{font-size:10px;font-weight:900;letter-spacing:3px;color:#7ab560;border:1px solid #7ab560;display:inline-block;padding:3px 10px;border-radius:3px;margin-bottom:10px}.header h1{font-size:20px;font-weight:900;color:#f0f0f0;margin-bottom:4px}.header p{font-size:12px;color:#7a8090}.ns{border-top:1px solid #1e2a1a;padding:14px 0}.nsn{font-size:13px;font-weight:700;color:#a0c880;margin-bottom:6px}.nst{font-size:12px;color:#8a9a80;line-height:1.7;white-space:pre-line}.warn{background:#1a1400;border:1px solid #7ab560;border-radius:8px;padding:12px 16px;font-size:11px;color:#a0c880;margin-top:24px;text-align:center}@media print{body{background:#080a0f!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>
+<div class="gold-bar"></div>
+<div class="header"><div class="tag">NEXUS-R · USO INTERNO</div><h1>Notas Internas da Proposta</h1><p>${state.empresa?state.empresa+' · ':''}Emitida em ${dateStr}</p></div>
+${itensHTML}
+<div class="warn">🔒 Documento de uso exclusivamente interno NEXUS-R — não enviar ao cliente.</div>
+<script>window.onload=function(){window.print();}<\/script></body></html>`;
+  const win=window.open('','_blank');
+  if(!win){alert('⚠️ Libere pop-ups para este site e tente novamente.');return;}
+  win.document.write(html);win.document.close();
+}
+
+// =============================================
 // LIMPAR HISTÓRICO (LGPD)
 // =============================================
 function confirmClear(){
@@ -890,6 +1068,215 @@ function toggleInternalNotes(){
   const open=content.style.display!=='none';
   content.style.display=open?'none':'block';
   icon.textContent=open?'▶':'▼';
+}
+
+// =============================================
+// PROPOSTA ACEITA — STEP 7
+// =============================================
+function openPropostaAceita(){
+  if(!state.servicos||state.servicos.length===0){alert('Gere uma proposta primeiro.');return;}
+  const isCotacao=modoVisu==='cotacao';
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const porteLabel={'1a5':'1–5 colaboradores','6a10':'6–10 colaboradores','11a15':'11–15 colaboradores','16a20':'16–20 colaboradores','21a50':'21–50 colaboradores','51a100':'51–100 colaboradores','100mais':'100+ colaboradores'};
+
+  // Header
+  document.getElementById('paNomeEmpresa').textContent=state.empresa||'Contratação Confirmada';
+  document.getElementById('paDataEmissao').textContent='Contrato emitido em '+dateStr;
+
+  // Client info
+  const ci=document.getElementById('paClientInfo');
+  ci.innerHTML=`
+    <div class="info-item"><label>Cliente</label><span>${state.nome}</span></div>
+    <div class="info-item"><label>Empresa</label><span>${state.empresa}</span></div>
+    ${state.cargo?`<div class="info-item"><label>Cargo</label><span>${state.cargo}</span></div>`:''}
+    ${state.segmento?`<div class="info-item"><label>Segmento</label><span>${state.segmento}</span></div>`:''}
+    <div class="info-item"><label>Porte</label><span>${porteLabel[state.porte]||state.porte}</span></div>
+    ${state.email?`<div class="info-item"><label>E-mail</label><span>${state.email}</span></div>`:''}
+  `;
+
+  // Price rows
+  const tbody=document.getElementById('paPriceRows');
+  tbody.innerHTML='';
+  document.getElementById('paDiscPct').value='0';
+
+  state.servicos.forEach(s=>{
+    const prefilledValue=isCotacao?s.cotacao:s.max;
+    const refLabel=isCotacao?`Ref. cotação: R$${fmt(s.cotacao)}`:`Faixa: R$${fmt(s.min)} – R$${fmt(s.max)}`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>
+        <span class="pa-service-name">${s.nome}</span>
+        <span class="pa-service-pilar">${s.pilar}</span>
+      </td>
+      <td style="text-align:right">
+        <input type="number" class="pa-price-input" id="pa-input-${s.key}" value="${prefilledValue}" min="0" step="50" oninput="calcPaTotal()">
+        <div class="pa-ref-val">${refLabel}</div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  calcPaTotal();
+  renderPaNotesSection();
+
+  // Navigate: hide current step, show step 7 (no progress bar update)
+  document.getElementById('step'+state.step).classList.remove('active');
+  state.step=7;
+  document.getElementById('step7').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function voltarParaProposta(){
+  document.getElementById('step7').classList.remove('active');
+  state.step=6;
+  document.getElementById('step6').classList.add('active');
+  updateProgress(6);
+  window.scrollTo(0,0);
+}
+
+function calcPaTotal(){
+  let total=0;
+  state.servicos.forEach(s=>{
+    const input=document.getElementById('pa-input-'+s.key);
+    if(input) total+=parseFloat(input.value)||0;
+  });
+  const isCotacao=modoVisu==='cotacao';
+  const refTotal=state.servicos.reduce((sum,s)=>sum+(isCotacao?s.cotacao:s.max),0);
+  const diff=refTotal-total;
+  const diffPct=refTotal>0?Math.round((diff/refTotal)*100):0;
+  const totalBox=document.getElementById('paTotalBox');
+  totalBox.innerHTML=`
+    <div class="pa-total-label">💰 Valor Total da Contratação</div>
+    <div class="pa-total-value">R$${fmt(Math.round(total))}</div>
+    ${diff>0?`<div class="pa-total-breakdown">Desconto concedido: R$${fmt(Math.round(diff))} (${diffPct}% de desconto)</div>`:''}
+  `;
+}
+
+function applyGlobalDiscount(){
+  const pct=parseFloat(document.getElementById('paDiscPct').value)||0;
+  if(pct<0||pct>100){alert('Desconto deve ser entre 0% e 100%.');return;}
+  const isCotacao=modoVisu==='cotacao';
+  state.servicos.forEach(s=>{
+    const base=isCotacao?s.cotacao:s.max;
+    const discounted=Math.round(base*(1-pct/100)/50)*50;
+    const input=document.getElementById('pa-input-'+s.key);
+    if(input) input.value=discounted;
+  });
+  calcPaTotal();
+}
+
+function parseNotes(interno){
+  if(!interno)return[];
+  const result=[];
+  const parts=interno.split(/(?=✅|❌|💡)/);
+  parts.forEach(part=>{
+    const t=part.trim();
+    if(!t)return;
+    if(t.startsWith('✅')) result.push({type:'incluso',text:t.replace(/^✅\s*/,'')});
+    else if(t.startsWith('❌')) result.push({type:'extra',text:t.replace(/^❌\s*/,'')});
+    else if(t.startsWith('💡')) result.push({type:'opcao',text:t.replace(/^💡\s*/,'')});
+  });
+  return result;
+}
+
+function renderPaNotesSection(){
+  const section=document.getElementById('paNotesSection');
+  const servicesWithNotes=state.servicos.filter(s=>s.interno&&s.interno.trim());
+  if(servicesWithNotes.length===0){section.innerHTML='';return;}
+
+  let html='<div class="pa-notes-title">📋 O que está incluso e o que é extra por serviço</div>';
+  servicesWithNotes.forEach(s=>{
+    const notes=parseNotes(s.interno);
+    if(notes.length===0)return;
+    const incluso=notes.filter(n=>n.type==='incluso');
+    const extra=notes.filter(n=>n.type==='extra');
+    const opcao=notes.filter(n=>n.type==='opcao');
+    html+=`<div class="pa-note-card"><div class="pa-note-service">📦 ${s.nome}</div>`;
+    incluso.forEach(n=>{html+=`<div class="pa-note-row pa-note-incluso"><span class="pa-note-icon">✅</span><span>${n.text}</span></div>`;});
+    extra.forEach(n=>{html+=`<div class="pa-note-row pa-note-extra"><span class="pa-note-icon">❌</span><span>${n.text}</span></div>`;});
+    opcao.forEach(n=>{html+=`<div class="pa-note-row pa-note-opcao"><span class="pa-note-icon">💡</span><span>${n.text}</span></div>`;});
+    html+='</div>';
+  });
+  section.innerHTML=html;
+}
+
+function downloadContratacaoPDF(){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const porteLabel={'1a5':'1–5 col.','6a10':'6–10 col.','11a15':'11–15 col.','16a20':'16–20 col.','21a50':'21–50 col.','51a100':'51–100 col.','100mais':'100+ col.'};
+
+  let totalFinal=0;
+  const servicosHTML=state.servicos.map((s,i)=>{
+    const input=document.getElementById('pa-input-'+s.key);
+    const val=input?(parseFloat(input.value)||0):0;
+    totalFinal+=val;
+    const bg=i%2===0?'#0f1219':'#13161e';
+    return `<tr style="background:${bg}">
+      <td style="padding:10px 12px;border-bottom:1px solid #222840">
+        <strong style="color:#f0f0f0;font-size:13px">${s.nome}</strong>
+        <br><span style="color:#7a8090;font-size:10px">${s.pilar}</span>
+      </td>
+      <td style="padding:10px 12px;border-bottom:1px solid #222840;text-align:right;white-space:nowrap">
+        <strong style="color:#C9A84C;font-size:14px">R$${fmt(Math.round(val))}</strong>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Notes section for PDF
+  const servicesWithNotes=state.servicos.filter(s=>s.interno&&s.interno.trim());
+  let notesHTML='';
+  if(servicesWithNotes.length>0){
+    notesHTML='<div class="st">📋 O que está incluso e o que é extra</div>';
+    servicesWithNotes.forEach(s=>{
+      const notes=parseNotes(s.interno);
+      if(notes.length===0)return;
+      notesHTML+=`<div style="background:#11141d;border-radius:10px;padding:14px;margin-bottom:10px;border-left:3px solid #2a3050">
+        <div style="font-size:12px;font-weight:700;color:#f0f0f0;margin-bottom:8px">📦 ${s.nome}</div>`;
+      notes.forEach(n=>{
+        const color=n.type==='incluso'?'#4caf50':n.type==='extra'?'#e57373':'#90caf9';
+        const icon=n.type==='incluso'?'✅':n.type==='extra'?'❌':'💡';
+        notesHTML+=`<div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:${color};margin-bottom:5px;line-height:1.5"><span style="flex-shrink:0">${icon}</span><span>${n.text}</span></div>`;
+      });
+      notesHTML+='</div>';
+    });
+  }
+
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Contratação NEXUS-R — ${state.empresa}</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#080a0f;color:#f0f0f0;padding:30px 40px;max-width:800px;margin:0 auto}.gold-bar{height:4px;background:#C9A84C;border-radius:2px;margin-bottom:24px}.header{background:#10131a;border:2px solid #C9A84C;border-radius:12px;padding:24px;text-align:center;margin-bottom:20px}.badge{display:inline-block;background:#C9A84C;color:#000;font-size:10px;font-weight:900;padding:3px 12px;border-radius:20px;letter-spacing:1px;margin-bottom:8px}.logo{font-size:10px;font-weight:900;letter-spacing:3px;color:#C9A84C;border:1px solid #C9A84C;display:inline-block;padding:3px 10px;border-radius:3px;margin-bottom:8px}.header h1{font-size:20px;font-weight:900;color:#f0f0f0;margin-bottom:4px}.header p{font-size:12px;color:#7a8090}.st{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#C9A84C;margin:20px 0 10px}.cb{background:#161b26;border-radius:10px;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}.ii label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#7a8090;display:block;margin-bottom:2px}.ii span{font-size:13px;font-weight:600;color:#f0f0f0}table{width:100%;border-collapse:collapse;margin-bottom:20px;border-radius:10px;overflow:hidden}th{background:#161b26;color:#C9A84C;font-size:11px;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;text-align:left}.tb{background:linear-gradient(135deg,#1a1400,#0d1018);border:2px solid #C9A84C;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px}.tb .lbl{font-size:11px;color:#7a8090;text-transform:uppercase;letter-spacing:1px}.tb .val{font-size:32px;font-weight:900;color:#C9A84C;margin:8px 0}.tb .nt{font-size:11px;color:#7a8090;margin-top:6px}.vld{font-size:11px;color:#7a8090;text-align:center;margin-top:20px}@media print{body{background:#080a0f!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style>
+</head><body>
+<div class="gold-bar"></div>
+<div class="header">
+  <div class="badge">✅ PROPOSTA ACEITA</div><br>
+  <div class="logo">NEXUS-R</div>
+  <h1>${state.empresa} — Contratação Confirmada</h1>
+  <p>Emitido em ${dateStr} · Inteligência em Risco e Performance Organizacional</p>
+</div>
+<div class="st">Dados do Cliente</div>
+<div class="cb">
+  <div class="ii"><label>Cliente</label><span>${state.nome}</span></div>
+  <div class="ii"><label>Empresa</label><span>${state.empresa}</span></div>
+  ${state.cargo?`<div class="ii"><label>Cargo</label><span>${state.cargo}</span></div>`:''}
+  <div class="ii"><label>Porte</label><span>${porteLabel[state.porte]||state.porte}</span></div>
+  ${state.segmento?`<div class="ii"><label>Segmento</label><span>${state.segmento}</span></div>`:''}
+  ${state.email?`<div class="ii"><label>E-mail</label><span>${state.email}</span></div>`:''}
+</div>
+<div class="st">Serviços Contratados (${state.servicos.length})</div>
+<table><thead><tr><th>Serviço</th><th style="text-align:right">Valor Final</th></tr></thead><tbody>${servicosHTML}</tbody></table>
+<div class="tb">
+  <div class="lbl">Valor Total da Contratação</div>
+  <div class="val">R$${fmt(Math.round(totalFinal))}</div>
+  <div class="nt">Pagamento: 50% entrada + 50% na entrega</div>
+</div>
+${notesHTML}
+<p class="vld">NEXUS-R Inteligência em Risco · Anderson Silva · (11) 94771-8044 · @nexus_risk</p>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  const win=window.open('','_blank');
+  if(!win){alert('⚠️ Libere pop-ups para este site e tente novamente.');return;}
+  win.document.write(html);
+  win.document.close();
 }
 </script>
 </body>
